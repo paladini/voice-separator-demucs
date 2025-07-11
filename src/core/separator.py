@@ -351,8 +351,7 @@ def get_audio_separator():
     
     return _audio_separator_instance
 
-# Compatibilidade
-audio_separator = get_audio_separator()
+# Compatibility - removed global instance to avoid initialization during import
 
 
 def separate_audio(input_file_path: str, selected_stems: List[str] = None) -> Dict[str, str]:
