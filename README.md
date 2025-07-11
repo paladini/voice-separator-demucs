@@ -4,6 +4,8 @@ A simple and efficient web application to separate audio elements (vocals, drums
 
 ## 🎵 What it does
 
+<img width="1036" height="880" alt="image" src="https://github.com/user-attachments/assets/a142eafd-0dc7-4724-925a-cf89e20fdaa9" />
+
 - **Separate vocals** from background music (karaoke)
 - **Extract instruments** individually (drums, bass, others)
 - **Process YouTube videos** automatically
