@@ -1,15 +1,16 @@
-# Dependências essenciais do Voice Separator
+# Essential dependencies for Voice Separator
 fastapi
 uvicorn[standard]
 python-multipart
 torch
 torchaudio
 demucs
+diffq
 pydub
 jinja2
 yt-dlp
 
-# Nota: pydub e yt-dlp requerem ffmpeg instalado no sistema
-# No Ubuntu/Debian: sudo apt-get install ffmpeg
-# No macOS: brew install ffmpeg  
-# No Windows: baixe de https://ffmpeg.org/download.html
+# Note: pydub and yt-dlp require ffmpeg installed on the system
+# Ubuntu/Debian: sudo apt-get install ffmpeg
+# macOS: brew install ffmpeg  
+# Windows: download from https://ffmpeg.org/download.html

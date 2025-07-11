@@ -18,10 +18,10 @@ If you have Docker installed:
 
 ```bash
 # Download and run
-docker-compose up -d
-
-# Access: http://localhost:8000
+docker compose up -d
 ```
+
+Access [http://localhost:8000](http://localhost:8000).
 
 **Done!** Skip to "Usage" below.
 
@@ -45,9 +45,9 @@ pip install -r requirements.txt
 
 # 4. Run
 python main.py
-
-# Access: http://localhost:8000
 ```
+
+Access [http://localhost:8000](http://localhost:8000).
 
 ## 🎵 Usage
 
