@@ -1,0 +1,26 @@
+# Voice Separator by Fernando Paladini
+# GitHub: https://github.com/paladini
+version: '3.8'
+
+services:
+  voice-separator:
+    build: .
+    container_name: voice-separator
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./static/output:/app/static/output
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    
+  # Opcional: Nginx para produção
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - voice-separator
+  #   restart: unless-stopped

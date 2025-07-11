@@ -1,0 +1,163 @@
+# Voice Separator - Separação de Vocais com IA
+
+Uma aplicação web simples e eficiente para separar elementos de áudio (vocais, bateria, baixo, outros instrumentos) de músicas usando inteligência artificial.
+
+## 🎵 O que faz
+
+- **Separar vocais** da música de fundo (karaoke)
+- **Extrair instrumentos** individualmente (bateria, baixo, outros)
+- **Processar vídeos do YouTube** automaticamente
+- **Interface web fácil** - sem necessidade de programação
+- **Múltiplos formatos** - aceita MP3, WAV, FLAC, M4A, AAC
+
+## 🚀 Como usar
+
+### Opção 1: Docker (Recomendado - Mais Fácil)
+
+Se você tem Docker instalado:
+
+```bash
+# Baixar e executar
+docker run -p 8000:8000 voice-separator
+
+# Ou construir localmente
+docker build -t voice-separator .
+docker run -p 8000:8000 voice-separator
+```
+
+Acesse: http://localhost:8000
+
+### Opção 2: Instalação Manual
+
+**Pré-requisitos:**
+- Python 3.8 ou superior
+- FFmpeg instalado no sistema
+
+**Instalar FFmpeg:**
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install ffmpeg
+
+# macOS (com Homebrew)
+brew install ffmpeg
+
+# Windows: baixe de https://ffmpeg.org/download.html
+```
+
+**Configurar o projeto:**
+
+```bash
+# 1. Entrar na pasta do projeto
+cd voice-separator-demucs
+
+# 2. Instalar dependências
+pip install -r requirements.txt
+
+# 3. Executar
+python main.py
+```
+
+Acesse: http://localhost:8000
+
+## 🎯 Como usar a interface
+
+### Upload de Arquivo
+1. **Selecione quais elementos extrair** (vocais, bateria, baixo, etc.)
+2. **Escolha um arquivo de áudio** do seu computador
+3. **Clique em "Separar"**
+4. **Aguarde o processamento** (2-5 minutos dependendo do arquivo)
+5. **Baixe os resultados** em MP3
+
+### YouTube
+1. **Selecione quais elementos extrair**
+2. **Cole a URL do vídeo** (ex: https://www.youtube.com/watch?v=...)
+3. **Clique em "Baixar e Separar"**
+4. **Aguarde download + processamento**
+5. **Baixe os arquivos separados**
+
+**Limitações do YouTube:**
+- Máximo 10 minutos de duração
+- Apenas vídeos públicos
+- Funciona melhor com vídeos musicais
+
+## 🎛️ Tipos de separação
+
+- **� Vocais** - Voz principal da música
+- **🎹 Instrumental** - Música completa sem vocais (para karaoke)
+- **🥁 Bateria** - Apenas a percussão
+- **🎸 Baixo** - Linha de baixo isolada  
+- **🎵 Outros** - Demais instrumentos (guitarra, piano, etc.)
+
+## ⏱️ Tempo de processamento
+
+- **1 elemento** (ex: só vocais): ~2-3 minutos
+- **2 elementos** (ex: vocal + instrumental): ~3-4 minutos
+- **Todos os elementos**: ~4-6 minutos
+
+*Tempos podem variar conforme o hardware do seu computador*
+
+### Como usar
+
+## 📋 Formatos aceitos
+
+- **MP3** - Mais comum
+- **WAV** - Alta qualidade
+- **FLAC** - Audio sem perda
+- **M4A** - iTunes/Apple
+- **AAC** - Comprimido
+
+**Tamanho máximo:** 100MB por arquivo
+
+## 🔧 Solução de problemas
+
+### "Erro ao carregar modelo"
+- Aguarde alguns minutos na primeira execução
+- O modelo de IA é baixado automaticamente (~200MB)
+- Verifique sua conexão com a internet
+
+### "FFmpeg não encontrado"
+Instale o FFmpeg no seu sistema:
+```bash
+# Ubuntu/Debian
+sudo apt-get install ffmpeg
+
+# macOS
+brew install ffmpeg
+```
+
+### Processamento muito lento
+- Use um computador com mais RAM (recomendado: 8GB+)
+- Feche outros programas pesados
+- Use arquivos menores (menos de 10 minutos)
+
+### Vídeo do YouTube não funciona
+- Verifique se o vídeo é público
+- Máximo 10 minutos de duração
+- Alguns vídeos podem ter restrições de download
+
+## 🧠 Tecnologia
+
+Esta aplicação usa o **Demucs**, um modelo de inteligência artificial desenvolvido pelo Facebook/Meta AI especificamente para separação de fontes musicais. É baseado em redes neurais profundas treinadas em milhares de músicas.
+
+## � Precisa de ajuda?
+
+Se encontrar problemas:
+1. Leia a seção "Solução de problemas" acima
+2. Verifique se o FFmpeg está instalado
+3. Teste com um arquivo pequeno primeiro
+4. Reinicie a aplicação se necessário
+
+## 📝 Nota sobre uso
+
+Esta ferramenta é destinada para uso pessoal e educacional. Respeite os direitos autorais das músicas que você processar.
+
+## 👨‍💻 Desenvolvido por
+
+**Fernando Paladini** ([@paladini](https://github.com/paladini))
+
+Baseado no modelo Demucs do Facebook/Meta AI Research.
+
+## 📄 Licença
+
+Este projeto está sob licença MIT. Veja o arquivo LICENSE para mais detalhes.
