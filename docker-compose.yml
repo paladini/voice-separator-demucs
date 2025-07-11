@@ -9,18 +9,13 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./static/output:/app/static/output
+      - ./static/output:/app/static/output    # Processed files
+      - model-cache:/home/app/.cache          # Model cache (persistent)
     environment:
       - PYTHONUNBUFFERED=1
+      - TORCH_HOME=/home/app/.cache/torch
     restart: unless-stopped
-    
-  # Opcional: Nginx para produção
-  # nginx:
-  #   image: nginx:alpine
-  #   ports:
-  #     - "80:80"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #   depends_on:
-  #     - voice-separator
-  #   restart: unless-stopped
+
+# Named volume for model cache
+volumes:
+  model-cache:

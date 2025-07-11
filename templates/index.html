@@ -1,76 +1,76 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Separator - Separação de Vocais</title>
+    <title>Voice Separator - Vocal Separation</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🎵 Voice Separator</h1>
-            <p>Separe vocais e instrumentais de suas músicas usando IA</p>
+            <p>Separate vocals and instrumentals from your music using AI</p>
         </header>
 
         <main>
-            <!-- Abas para alternar entre Upload e YouTube -->
+            <!-- Tabs to switch between Upload and YouTube -->
             <div class="tabs-container">
                 <div class="tabs">
-                    <button class="tab-button active" data-tab="upload">📁 Upload de Arquivo</button>
+                    <button class="tab-button active" data-tab="upload">📁 File Upload</button>
                     <button class="tab-button" data-tab="youtube">🎥 YouTube</button>
                 </div>
             </div>
 
-            <!-- Seção de Seleção de Canais -->
+            <!-- Stem Selection Section -->
             <div class="stems-selection-section">
-                <h3>🎛️ Selecione quais canais extrair:</h3>
+                <h3>🎛️ Select which channels to extract:</h3>
                 <div class="stems-options">
                     <label class="stem-option">
                         <input type="checkbox" name="stems" value="vocals" checked>
                         <span class="stem-icon">🎤</span>
-                        <span class="stem-name">Vocais</span>
-                        <span class="stem-description">Voz principal</span>
+                        <span class="stem-name">Vocals</span>
+                        <span class="stem-description">Main voice</span>
                     </label>
                     
                     <label class="stem-option">
                         <input type="checkbox" name="stems" value="instrumental">
                         <span class="stem-icon">🎹</span>
                         <span class="stem-name">Instrumental</span>
-                        <span class="stem-description">Música sem vocais</span>
+                        <span class="stem-description">Music without vocals</span>
                     </label>
                     
                     <label class="stem-option">
                         <input type="checkbox" name="stems" value="drums">
                         <span class="stem-icon">🥁</span>
-                        <span class="stem-name">Bateria</span>
-                        <span class="stem-description">Percussão isolada</span>
+                        <span class="stem-name">Drums</span>
+                        <span class="stem-description">Isolated percussion</span>
                     </label>
                     
                     <label class="stem-option">
                         <input type="checkbox" name="stems" value="bass">
                         <span class="stem-icon">🎸</span>
-                        <span class="stem-name">Baixo</span>
-                        <span class="stem-description">Linha de baixo</span>
+                        <span class="stem-name">Bass</span>
+                        <span class="stem-description">Bass line</span>
                     </label>
                     
                     <label class="stem-option">
                         <input type="checkbox" name="stems" value="other">
                         <span class="stem-icon">🎵</span>
-                        <span class="stem-name">Outros</span>
-                        <span class="stem-description">Instrumentos restantes</span>
+                        <span class="stem-name">Other</span>
+                        <span class="stem-description">Remaining instruments</span>
                     </label>
                 </div>
                 
                 <div class="processing-warning" id="processingWarning" style="display: none;">
                     <div class="warning-content">
                         <span class="warning-icon">⚠️</span>
-                        <span class="warning-text">Múltiplos canais selecionados. O processamento pode demorar mais tempo.</span>
+                        <span class="warning-text">Multiple channels selected. Processing may take longer.</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Seção de Upload de Arquivo -->
+            <!-- File Upload Section -->
             <div class="tab-content active" id="upload-tab">
                 <div class="upload-section">
                     <form id="uploadForm" enctype="multipart/form-data">
@@ -84,7 +84,7 @@
                             >
                             <label for="audioFile" class="file-input-label">
                                 <span class="file-icon">📁</span>
-                                <span class="file-text">Escolher arquivo de áudio</span>
+                                <span class="file-text">Choose audio file</span>
                             </label>
                         </div>
                         
@@ -95,13 +95,13 @@
 
                         <button type="submit" id="separateBtn" class="btn-primary" disabled>
                             <span class="btn-icon">�</span>
-                            Extrair Vocais
+                            Extract Vocals
                         </button>
                     </form>
                 </div>
             </div>
 
-            <!-- Seção do YouTube -->
+            <!-- YouTube Section -->
             <div class="tab-content" id="youtube-tab">
                 <div class="youtube-section">
                     <form id="youtubeForm">
@@ -114,7 +114,7 @@
                                 required
                             >
                             <label for="youtubeUrl" class="url-input-label">
-                                🎥 Cole a URL do YouTube aqui
+                                🎥 Paste YouTube URL here
                             </label>
                         </div>
                         
@@ -128,16 +128,16 @@
 
                         <button type="submit" id="youtubeBtn" class="btn-primary" disabled>
                             <span class="btn-icon">⬇️</span>
-                            Baixar e Separar
+                            Download and Separate
                         </button>
                     </form>
                     
                     <div class="youtube-info">
-                        <p><strong>Limitações:</strong></p>
+                        <p><strong>Limitations:</strong></p>
                         <ul>
-                            <li>⏱️ Máximo 10 minutos de duração</li>
-                            <li>🔓 Vídeos públicos apenas</li>
-                            <li>🎵 Melhor qualidade com vídeos musicais</li>
+                            <li>⏱️ Maximum 10 minutes duration</li>
+                            <li>🔓 Public videos only</li>
+                            <li>🎵 Better quality with music videos</li>
                         </ul>
                     </div>
                 </div>
@@ -151,20 +151,20 @@
             </div>
 
             <div class="results-section" id="resultsSection" style="display: none;">
-                <h3>Resultados da Separação</h3>
+                <h3>Separation Results</h3>
                 <div class="results-grid" id="resultsGrid">
-                    <!-- Os resultados serão inseridos aqui dinamicamente -->
+                    <!-- Results will be inserted here dynamically -->
                 </div>
             </div>
         </main>
 
         <footer>
-            <p>Desenvolvido por <a href="https://github.com/paladini" target="_blank">Fernando Paladini</a> | Powered by <a href="https://github.com/facebookresearch/demucs" target="_blank">Demucs</a> - Meta AI</p>
+            <p>Developed by <a href="https://github.com/paladini" target="_blank">Fernando Paladini</a> | Powered by <a href="https://github.com/facebookresearch/demucs" target="_blank">Demucs</a> - Meta AI</p>
         </footer>
     </div>
 
     <script>
-        // Elementos do DOM
+        // DOM Elements
         const uploadForm = document.getElementById('uploadForm');
         const youtubeForm = document.getElementById('youtubeForm');
         const audioFileInput = document.getElementById('audioFile');
@@ -183,11 +183,11 @@
         const videoDuration = document.getElementById('videoDuration');
         const videoUploader = document.getElementById('videoUploader');
         
-        // Elementos de seleção de canais
+        // Stem selection elements
         const stemCheckboxes = document.querySelectorAll('input[name="stems"]');
         const processingWarning = document.getElementById('processingWarning');
 
-        // Sistema de canais
+        // Stem system
         function getSelectedStems() {
             return Array.from(stemCheckboxes)
                 .filter(cb => cb.checked)
@@ -197,7 +197,7 @@
         function updateStemSelection() {
             const selectedStems = getSelectedStems();
             
-            // Atualizar aparência dos canais selecionados
+            // Update appearance of selected channels
             stemCheckboxes.forEach(cb => {
                 const option = cb.closest('.stem-option');
                 if (cb.checked) {
@@ -207,13 +207,13 @@
                 }
             });
             
-            // Mostrar aviso se muitos stems selecionados
+            // Show warning if many stems selected
             let showWarning = false;
             let warningText = '';
             
             if (selectedStems.length > 2) {
                 showWarning = true;
-                warningText = 'Múltiplos canais selecionados. O processamento pode demorar mais tempo.';
+                warningText = 'Multiple channels selected. Processing may take longer.';
             }
             
             if (showWarning) {
@@ -223,11 +223,11 @@
                 processingWarning.style.display = 'none';
             }
             
-            // Atualizar texto dos botões baseado na seleção
+            // Update button text based on selection
             if (selectedStems.length === 0) {
                 separateBtn.disabled = true;
                 youtubeBtn.disabled = youtubeUrlInput.value.trim() === '';
-                separateBtn.innerHTML = '<span class="btn-icon">⚠️</span>Selecione pelo menos um canal';
+                separateBtn.innerHTML = '<span class="btn-icon">⚠️</span>Select at least one channel';
             } else {
                 const fileSelected = audioFileInput.files.length > 0;
                 const urlValid = youtubeUrlInput.value.trim() !== '';
@@ -235,54 +235,54 @@
                 separateBtn.disabled = !fileSelected;
                 youtubeBtn.disabled = !urlValid;
                 
-                // Texto inteligente baseado na seleção
+                // Intelligent text based on selection
                 let buttonText = '';
                 let buttonIcon = '';
                 
                 if (selectedStems.length === 1) {
-                    // Um canal selecionado - nome específico
+                    // One channel selected - specific name
                     switch(selectedStems[0]) {
                         case 'vocals':
-                            buttonText = 'Extrair Vocais';
+                            buttonText = 'Extract Vocals';
                             buttonIcon = '🎤';
                             break;
                         case 'instrumental':
-                            buttonText = 'Extrair Instrumental';
+                            buttonText = 'Extract Instrumental';
                             buttonIcon = '🎹';
                             break;
                         case 'drums':
-                            buttonText = 'Extrair Bateria';
+                            buttonText = 'Extract Drums';
                             buttonIcon = '🥁';
                             break;
                         case 'bass':
-                            buttonText = 'Extrair Baixo';
+                            buttonText = 'Extract Bass';
                             buttonIcon = '🎸';
                             break;
                         case 'other':
-                            buttonText = 'Extrair Outros';
+                            buttonText = 'Extract Other';
                             buttonIcon = '🎵';
                             break;
                         default:
-                            buttonText = 'Separar Áudio';
+                            buttonText = 'Separate Audio';
                             buttonIcon = '🎵';
                     }
                 } else {
-                    // Múltiplos canais
-                    buttonText = `Separar ${selectedStems.length} Canais`;
+                    // Multiple channels
+                    buttonText = `Separate ${selectedStems.length} Channels`;
                     buttonIcon = '🎛️';
                 }
                 
                 separateBtn.innerHTML = `<span class="btn-icon">${buttonIcon}</span>${buttonText}`;
-                youtubeBtn.innerHTML = `<span class="btn-icon">${buttonIcon}</span>${buttonText} do YouTube`;
+                youtubeBtn.innerHTML = `<span class="btn-icon">${buttonIcon}</span>${buttonText} from YouTube`;
             }
         }
 
-        // Event listeners para canais
+        // Event listeners for channels
         stemCheckboxes.forEach(cb => {
             cb.addEventListener('change', updateStemSelection);
         });
 
-        // Sistema de abas
+        // Tab system
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
@@ -290,28 +290,28 @@
             button.addEventListener('click', () => {
                 const tabName = button.dataset.tab;
                 
-                // Remover active de todas as abas
+                // Remove active from all tabs
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
                 
-                // Ativar aba selecionada
+                // Activate selected tab
                 button.classList.add('active');
                 document.getElementById(`${tabName}-tab`).classList.add('active');
                 
-                // Limpar status e resultados
+                // Clear status and results
                 clearStatus();
                 resultsSection.style.display = 'none';
             });
         });
 
-        // Função para formatar duração
+        // Function to format duration
         function formatDuration(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = seconds % 60;
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         }
 
-        // Função para formatar tamanho do arquivo
+        // Function to format file size
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -320,28 +320,28 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // Validação de URL do YouTube
+        // YouTube URL validation
         function isValidYouTubeUrl(url) {
             const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
             return regex.test(url);
         }
 
-        // Handler para input do YouTube
+        // Handler for YouTube input
         youtubeUrlInput.addEventListener('input', function(e) {
             const url = e.target.value.trim();
             if (url && isValidYouTubeUrl(url)) {
                 youtubeBtn.disabled = false;
-                showStatus('URL válida do YouTube detectada.', 'info');
+                showStatus('Valid YouTube URL detected.', 'info');
             } else if (url) {
                 youtubeBtn.disabled = true;
-                showStatus('URL do YouTube inválida. Use: https://www.youtube.com/watch?v=...', 'error');
+                showStatus('Invalid YouTube URL. Use: https://www.youtube.com/watch?v=...', 'error');
             } else {
                 youtubeBtn.disabled = true;
                 clearStatus();
             }
         });
 
-        // Mostrar informações do arquivo selecionado (código existente...)
+        // Show selected file information (existing code...)
         audioFileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -350,25 +350,25 @@
                 fileInfo.style.display = 'block';
                 separateBtn.disabled = false;
                 
-                // Validar tipo de arquivo
+                // Validate file type
                 const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/flac', 'audio/mp4', 'audio/aac'];
                 const allowedExtensions = ['.mp3', '.wav', '.flac', '.m4a', '.aac'];
                 const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
                 
                 if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
-                    showStatus('Formato de arquivo não suportado. Use MP3, WAV, FLAC, M4A ou AAC.', 'error');
+                    showStatus('Unsupported file format. Use MP3, WAV, FLAC, M4A or AAC.', 'error');
                     separateBtn.disabled = true;
                     return;
                 }
                 
-                // Verificar tamanho (100MB)
+                // Check size (100MB)
                 if (file.size > 100 * 1024 * 1024) {
-                    showStatus('Arquivo muito grande. Limite máximo: 100MB', 'error');
+                    showStatus('File too large. Maximum limit: 100MB', 'error');
                     separateBtn.disabled = true;
                     return;
                 }
                 
-                showStatus('Arquivo válido selecionado. Clique em "Separar Vocais" para continuar.', 'info');
+                showStatus('Valid file selected. Click "Separate Vocals" to continue.', 'info');
             } else {
                 fileInfo.style.display = 'none';
                 separateBtn.disabled = true;
@@ -376,29 +376,29 @@
             }
         });
 
-        // Função para mostrar status
+        // Function to show status
         function showStatus(message, type = 'info') {
             statusArea.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
         }
 
-        // Função para limpar status
+        // Function to clear status
         function clearStatus() {
             statusArea.innerHTML = '';
         }
 
-        // Função para mostrar/esconder barra de progresso
+        // Function to show/hide progress bar
         function toggleProgress(show) {
             progressBar.style.display = show ? 'block' : 'none';
         }
 
-        // Função para criar links de download
+        // Function to create download links
         function createDownloadLink(url, filename, type, icon = null, label = null) {
             const linkContainer = document.createElement('div');
             linkContainer.className = 'download-item';
             
-            // Usar ícone e label passados ou fallback para os valores antigos
+            // Use passed icon and label or fallback to old values
             const stemIcon = icon || (type === 'vocals' ? '🎤' : '🎹');
-            const stemLabel = label || (type === 'vocals' ? 'Vocais' : 'Instrumental');
+            const stemLabel = label || (type === 'vocals' ? 'Vocals' : 'Instrumental');
             
             linkContainer.innerHTML = `
                 <div class="download-info">
@@ -406,7 +406,7 @@
                     <span class="download-label">${stemLabel}</span>
                 </div>
                 <a href="${url}" download="${filename}" class="download-link">
-                    <span class="download-text">Baixar</span>
+                    <span class="download-text">Download</span>
                     <span class="download-arrow">⬇️</span>
                 </a>
             `;
@@ -414,41 +414,41 @@
             return linkContainer;
         }
 
-        // Handler do formulário de upload
+        // Upload form handler
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const file = audioFileInput.files[0];
             if (!file) {
-                showStatus('Por favor, selecione um arquivo de áudio.', 'error');
+                showStatus('Please select an audio file.', 'error');
                 return;
             }
             
             const selectedStems = getSelectedStems();
             if (selectedStems.length === 0) {
-                showStatus('Por favor, selecione pelo menos um canal para extrair.', 'error');
+                showStatus('Please select at least one channel to extract.', 'error');
                 return;
             }
 
             const formData = new FormData(uploadForm);
             formData.append('stems', selectedStems.join(','));
             
-            await processAudio('/api/separate', formData, 'Enviando arquivo...', separateBtn);
+            await processAudio('/api/separate', formData, 'Uploading file...', separateBtn);
         });
 
-        // Handler do formulário do YouTube
+        // YouTube form handler
         youtubeForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const url = youtubeUrlInput.value.trim();
             if (!url || !isValidYouTubeUrl(url)) {
-                showStatus('Por favor, insira uma URL válida do YouTube.', 'error');
+                showStatus('Please enter a valid YouTube URL.', 'error');
                 return;
             }
             
             const selectedStems = getSelectedStems();
             if (selectedStems.length === 0) {
-                showStatus('Por favor, selecione pelo menos um canal para extrair.', 'error');
+                showStatus('Please select at least one channel to extract.', 'error');
                 return;
             }
 
@@ -456,29 +456,29 @@
             formData.append('url', url);
             formData.append('stems', selectedStems.join(','));
             
-            await processAudio('/api/separate-youtube', formData, 'Baixando do YouTube...', youtubeBtn);
+            await processAudio('/api/separate-youtube', formData, 'Downloading from YouTube...', youtubeBtn);
         });
 
-        // Função genérica para processar áudio
+        // Generic function to process audio
         async function processAudio(endpoint, formData, initialMessage, button) {
-            // Preparar para processamento
+            // Prepare for processing
             button.disabled = true;
             const originalButtonContent = button.innerHTML;
             
-            // Mensagens específicas por tipo
+            // Specific messages by type
             if (endpoint.includes('youtube')) {
-                button.innerHTML = '<span class="btn-icon">⚡</span>Download Rápido...';
-                showStatus('🚀 Otimizando download... Aguarde!', 'loading');
+                button.innerHTML = '<span class="btn-icon">⚡</span>Fast Download...';
+                showStatus('🚀 Optimizing download... Please wait!', 'loading');
             } else {
-                button.innerHTML = '<span class="btn-icon">⏳</span>Processando...';
-                showStatus(initialMessage + ' Isso pode levar alguns minutos.', 'loading');
+                button.innerHTML = '<span class="btn-icon">⏳</span>Processing...';
+                showStatus(initialMessage + ' This may take a few minutes.', 'loading');
             }
             
             toggleProgress(true);
             resultsSection.style.display = 'none';
 
             try {
-                // Fazer requisição
+                // Make request
                 const response = await fetch(endpoint, {
                     method: 'POST',
                     body: formData
@@ -487,20 +487,20 @@
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    // Sucesso
-                    let successMessage = 'Separação concluída com sucesso! 🎉';
+                    // Success
+                    let successMessage = 'Separation completed successfully! 🎉';
                     if (result.video_info) {
                         successMessage += ` (${result.video_info.title})`;
                     }
                     if (result.processing_time) {
-                        successMessage += ` (Tempo: ${result.processing_time})`;
+                        successMessage += ` (Time: ${result.processing_time})`;
                     }
                     showStatus(successMessage, 'success');
                     
-                    // Mostrar resultados
+                    // Show results
                     resultsGrid.innerHTML = '';
                     
-                    // Processar arquivos retornados (novo formato da API)
+                    // Process returned files (new API format)
                     if (result.files) {
                         Object.entries(result.files).forEach(([stemType, fileInfo]) => {
                             const downloadLink = createDownloadLink(
@@ -513,14 +513,14 @@
                             resultsGrid.appendChild(downloadLink);
                         });
                     } else {
-                        // Fallback para formato antigo (compatibilidade)
+                        // Fallback for old format (compatibility)
                         if (result.vocals_url) {
                             const vocalsLink = createDownloadLink(
                                 result.vocals_url, 
                                 result.vocals_filename, 
                                 'vocals',
                                 '🎤',
-                                'Vocais'
+                                'Vocals'
                             );
                             resultsGrid.appendChild(vocalsLink);
                         }
@@ -540,24 +540,24 @@
                     resultsSection.style.display = 'block';
                     
                 } else {
-                    // Erro da API - mostrar erro amigável
-                    let errorMessage = result.detail || result.message || 'Erro desconhecido';
+                    // API Error - show friendly error
+                    let errorMessage = result.detail || result.message || 'Unknown error';
                     let displayMessage = errorMessage;
                     let suggestion = '';
                     
-                    // Analisar tipo de erro e sugerir solução
+                    // Analyze error type and suggest solution
                     if (errorMessage.includes('tensor') || errorMessage.includes('reshape') || errorMessage.includes('format')) {
-                        displayMessage = 'Problema de compatibilidade com o modelo selecionado';
-                        suggestion = 'Tente usar o modelo "MDX Extra Q" que é mais compatível.';
+                        displayMessage = 'Compatibility issue with selected model';
+                        suggestion = 'Try using the "MDX Extra Q" model which is more compatible.';
                     } else if (errorMessage.includes('memory') || errorMessage.includes('CUDA') || errorMessage.includes('GPU')) {
-                        displayMessage = 'Problema de memória ou GPU';
-                        suggestion = 'Selecione um modelo mais leve como "MDX Extra Q".';
+                        displayMessage = 'Memory or GPU issue';
+                        suggestion = 'Select a lighter model like "MDX Extra Q".';
                     } else if (errorMessage.includes('model') || errorMessage.includes('load')) {
-                        displayMessage = 'Falha ao carregar o modelo';
-                        suggestion = 'Tente novamente ou selecione um modelo diferente.';
+                        displayMessage = 'Failed to load model';
+                        suggestion = 'Try again or select a different model.';
                     } else if (errorMessage.includes('file') || errorMessage.includes('format')) {
-                        displayMessage = 'Arquivo não suportado';
-                        suggestion = 'Verifique se o arquivo é um áudio válido (MP3, WAV, etc.).';
+                        displayMessage = 'Unsupported file';
+                        suggestion = 'Check if the file is a valid audio (MP3, WAV, etc.).';
                     }
                     
                     let fullMessage = `❌ ${displayMessage}`;
@@ -569,23 +569,23 @@
                 }
 
             } catch (error) {
-                // Erro de rede ou parsing
-                console.error('Erro:', error);
-                showStatus('❌ Erro de conexão. Verifique sua internet e tente novamente.', 'error');
+                // Network or parsing error
+                console.error('Error:', error);
+                showStatus('❌ Connection error. Check your internet and try again.', 'error');
             } finally {
-                // Restaurar estado do botão
+                // Restore button state
                 button.disabled = false;
                 button.innerHTML = originalButtonContent;
                 toggleProgress(false);
             }
         }
 
-        // Inicialização
+        // Initialization
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar seleção de canais
+            // Initialize channel selection
             updateStemSelection();
             
-            showStatus('Selecione um arquivo de áudio ou cole uma URL do YouTube para começar.', 'info');
+            showStatus('Select an audio file or paste a YouTube URL to start.', 'info');
         });
     </script>
 </body>

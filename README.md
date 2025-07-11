@@ -1,163 +1,181 @@
-# Voice Separator - Separação de Vocais com IA
+# Voice Separator - AI-Powered Audio Separation
 
-Uma aplicação web simples e eficiente para separar elementos de áudio (vocais, bateria, baixo, outros instrumentos) de músicas usando inteligência artificial.
+A simple and efficient web application to separate audio elements (vocals, drums, bass, other instruments) from music using artificial intelligence.
 
-## 🎵 O que faz
+## 🎵 What it does
 
-- **Separar vocais** da música de fundo (karaoke)
-- **Extrair instrumentos** individualmente (bateria, baixo, outros)
-- **Processar vídeos do YouTube** automaticamente
-- **Interface web fácil** - sem necessidade de programação
-- **Múltiplos formatos** - aceita MP3, WAV, FLAC, M4A, AAC
+- **Separate vocals** from background music (karaoke)
+- **Extract instruments** individually (drums, bass, others)
+- **Process YouTube videos** automatically
+- **Easy web interface** - no programming required
+- **Multiple formats** - supports MP3, WAV, FLAC, M4A, AAC
 
-## 🚀 Como usar
+## 🚀 How to use
 
-### Opção 1: Docker (Recomendado - Mais Fácil)
+### Option 1: Docker (Recommended - Easiest)
 
-Se você tem Docker instalado:
+If you have Docker installed:
 
 ```bash
-# Baixar e executar
-docker run -p 8000:8000 voice-separator
+# Download and run
+docker-compose up -d
 
-# Ou construir localmente
-docker build -t voice-separator .
-docker run -p 8000:8000 voice-separator
+# Access: http://localhost:8000
 ```
 
-Acesse: http://localhost:8000
+**Done!** Skip to "Usage" below.
 
-### Opção 2: Instalação Manual
+### Option 2: Python
 
-**Pré-requisitos:**
-- Python 3.8 ou superior
-- FFmpeg instalado no sistema
-
-**Instalar FFmpeg:**
+**Prerequisites:**
+- Python 3.8+
+- FFmpeg installed
 
 ```bash
-# Ubuntu/Debian
-sudo apt-get install ffmpeg
+# 1. Install FFmpeg
+sudo apt-get install ffmpeg  # Ubuntu/Debian
+# or
+brew install ffmpeg  # macOS
 
-# macOS (com Homebrew)
-brew install ffmpeg
-
-# Windows: baixe de https://ffmpeg.org/download.html
-```
-
-**Configurar o projeto:**
-
-```bash
-# 1. Entrar na pasta do projeto
+# 2. Navigate to project folder
 cd voice-separator-demucs
 
-# 2. Instalar dependências
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# 3. Executar
+# 4. Run
 python main.py
+
+# Access: http://localhost:8000
 ```
 
-Acesse: http://localhost:8000
+## 🎵 Usage
 
-## 🎯 Como usar a interface
-
-### Upload de Arquivo
-1. **Selecione quais elementos extrair** (vocais, bateria, baixo, etc.)
-2. **Escolha um arquivo de áudio** do seu computador
-3. **Clique em "Separar"**
-4. **Aguarde o processamento** (2-5 minutos dependendo do arquivo)
-5. **Baixe os resultados** em MP3
+### File Upload
+1. **Select elements** (vocals, drums, bass, etc.)
+2. **Choose audio file** (MP3, WAV, etc.)
+3. **Click "Separate"**
+4. **Wait** 2-5 minutes
+5. **Download** results
 
 ### YouTube
-1. **Selecione quais elementos extrair**
-2. **Cole a URL do vídeo** (ex: https://www.youtube.com/watch?v=...)
-3. **Clique em "Baixar e Separar"**
-4. **Aguarde download + processamento**
-5. **Baixe os arquivos separados**
+1. **Select desired elements**
+2. **Paste YouTube URL**
+3. **Click "Download and Separate"**
+4. **Wait** for download + processing
+5. **Download** separated files
 
-**Limitações do YouTube:**
-- Máximo 10 minutos de duração
-- Apenas vídeos públicos
-- Funciona melhor com vídeos musicais
+## ⚡ Quick tips
 
-## 🎛️ Tipos de separação
+- **First time:** AI model will be downloaded (~200MB)
+- **Vocals only:** Faster (~2 min)
+- **All elements:** Slower (~5 min)
+- **YouTube:** 10-minute video limit
 
-- **� Vocais** - Voz principal da música
-- **🎹 Instrumental** - Música completa sem vocais (para karaoke)
-- **🥁 Bateria** - Apenas a percussão
-- **🎸 Baixo** - Linha de baixo isolada  
-- **🎵 Outros** - Demais instrumentos (guitarra, piano, etc.)
+## 📋 Supported formats
 
-## ⏱️ Tempo de processamento
+✅ **MP3**, WAV, FLAC, M4A, AAC  
+📏 **Limit:** 100MB per file  
+⏱️ **YouTube:** Maximum 10 minutes
 
-- **1 elemento** (ex: só vocais): ~2-3 minutos
-- **2 elementos** (ex: vocal + instrumental): ~3-4 minutos
-- **Todos os elementos**: ~4-6 minutos
+## 🛠️ Technical details
 
-*Tempos podem variar conforme o hardware do seu computador*
+This application uses **Demucs**, an AI model developed by Facebook/Meta AI specifically for music source separation. It's based on deep neural networks trained on thousands of songs.
 
-### Como usar
+### Architecture
+- **Backend:** FastAPI + PyTorch + Demucs
+- **Frontend:** Modern responsive web interface
+- **AI Model:** MDX Extra Q (CPU-optimized)
+- **Audio Processing:** FFmpeg + PyTorch Audio
 
-## 📋 Formatos aceitos
+### Performance
+- **Optimized for CPU** (GPU optional)
+- **Memory efficient** with dynamic model loading
+- **Persistent model cache** to avoid re-downloads
 
-- **MP3** - Mais comum
-- **WAV** - Alta qualidade
-- **FLAC** - Audio sem perda
-- **M4A** - iTunes/Apple
-- **AAC** - Comprimido
+## 🐳 Docker deployment
 
-**Tamanho máximo:** 100MB por arquivo
+### Quick start
+```bash
+# Using docker-compose (recommended)
+docker-compose up -d
 
-## 🔧 Solução de problemas
+# Or using Docker directly
+docker build -t voice-separator .
+docker run -p 8000:8000 -v $(pwd)/static/output:/app/static/output voice-separator
+```
 
-### "Erro ao carregar modelo"
-- Aguarde alguns minutos na primeira execução
-- O modelo de IA é baixado automaticamente (~200MB)
-- Verifique sua conexão com a internet
+### Production deployment
+```bash
+# With persistent model cache
+docker-compose -f docker-compose.yml up -d
 
-### "FFmpeg não encontrado"
-Instale o FFmpeg no seu sistema:
+# Models are cached in a Docker volume for better performance
+```
+
+## 🆘 Troubleshooting
+
+**"FFmpeg not found"**
 ```bash
 # Ubuntu/Debian
 sudo apt-get install ffmpeg
 
 # macOS
 brew install ffmpeg
+
+# Windows
+# Download from https://ffmpeg.org/download.html
 ```
 
-### Processamento muito lento
-- Use um computador com mais RAM (recomendado: 8GB+)
-- Feche outros programas pesados
-- Use arquivos menores (menos de 10 minutos)
+**Very slow processing**
+- Use smaller files
+- Close other programs
+- Select fewer elements
+- First run downloads AI model (~200MB)
 
-### Vídeo do YouTube não funciona
-- Verifique se o vídeo é público
-- Máximo 10 minutos de duração
-- Alguns vídeos podem ter restrições de download
+**YouTube download error**
+- Check if video is public
+- Maximum 10 minutes duration
+- Some videos may be region-locked
 
-## 🧠 Tecnologia
+**Out of memory errors**
+- Reduce file size
+- Close other applications
+- Use fewer simultaneous processes
 
-Esta aplicação usa o **Demucs**, um modelo de inteligência artificial desenvolvido pelo Facebook/Meta AI especificamente para separação de fontes musicais. É baseado em redes neurais profundas treinadas em milhares de músicas.
+## 🔧 Development
 
-## � Precisa de ajuda?
+### Local setup
+```bash
+# Clone repository
+git clone https://github.com/paladini/voice-separator-demucs.git
+cd voice-separator-demucs
 
-Se encontrar problemas:
-1. Leia a seção "Solução de problemas" acima
-2. Verifique se o FFmpeg está instalado
-3. Teste com um arquivo pequeno primeiro
-4. Reinicie a aplicação se necessário
+# Install dependencies
+pip install -r requirements.txt
 
-## 📝 Nota sobre uso
+# Run development server
+python main.py
+```
 
-Esta ferramenta é destinada para uso pessoal e educacional. Respeite os direitos autorais das músicas que você processar.
+### API documentation
+- Interactive docs: `http://localhost:8000/docs`
+- Alternative docs: `http://localhost:8000/redoc`
 
-## 👨‍💻 Desenvolvido por
+## 📝 Usage notes
+
+This tool is intended for personal and educational use. Please respect the copyright of the music you process.
+
+## 👨‍💻 Developed by
 
 **Fernando Paladini** ([@paladini](https://github.com/paladini))
 
-Baseado no modelo Demucs do Facebook/Meta AI Research.
+Based on the Demucs model by Facebook/Meta AI Research.
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está sob licença MIT. Veja o arquivo LICENSE para mais detalhes.
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+---
+
+📖 **[Versão em Português](README_PT-BR.md)**

@@ -1,39 +1,39 @@
 """
-Voice Separator - Aplicação principal
+Voice Separator - Main Application
 
-Este é o ponto de entrada da aplicação Voice Separator.
-A aplicação permite separar stems de áudio (vocals, drums, bass, other) 
-usando o modelo Demucs da Meta AI.
+This is the entry point for the Voice Separator application.
+The application allows separating audio stems (vocals, drums, bass, other) 
+using Meta AI's Demucs model.
 
-Funcionalidades:
-- Upload de arquivos de áudio
-- Download e processamento de vídeos do YouTube  
-- Seleção de stems específicos para processamento otimizado
-- Interface web moderna e responsiva
+Features:
+- Audio file upload
+- YouTube video download and processing
+- Specific stem selection for optimized processing
+- Modern and responsive web interface
 
-Para executar:
+To run:
     python main.py
     
-Ou usar uvicorn diretamente:
+Or use uvicorn directly:
     uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 """
 
 import sys
 from pathlib import Path
 
-# Adicionar o diretório src ao Python path para imports
+# Add src directory to Python path for imports
 src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(src_path))
 
-# Importar a aplicação FastAPI
+# Import FastAPI application
 from src.api import app
 
 if __name__ == "__main__":
     import uvicorn
     
-    print("🎵 Iniciando Voice Separator...")
-    print("📁 Estrutura organizada: src/core + src/api")
-    print("🚀 Acesse: http://localhost:8000")
+    print("🎵 Starting Voice Separator...")
+    print("📁 Organized structure: src/core + src/api")
+    print("🚀 Access: http://localhost:8000")
     print("📖 API Docs: http://localhost:8000/docs")
     print("🔍 Health Check: http://localhost:8000/health")
     

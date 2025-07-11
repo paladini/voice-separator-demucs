@@ -12,10 +12,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Criar instância do FastAPI
+# Create FastAPI instance
 app = FastAPI(
     title="Voice Separator by Fernando Paladini", 
-    description="Separação de vocais usando Demucs",
+    description="Voice separation using Demucs",
     version="1.0.0",
     contact={
         "name": "Fernando Paladini",
@@ -23,44 +23,44 @@ app = FastAPI(
     }
 )
 
-# Criar diretório de saída se não existir (relativo à raiz do projeto)
+# Create output directory if it doesn't exist (relative to project root)
 project_root = Path(__file__).parent.parent.parent
 output_dir = project_root / "static" / "output"
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Montar arquivos estáticos
+# Mount static files
 app.mount("/static", StaticFiles(directory=str(project_root / "static")), name="static")
 
-# Configurar templates
+# Configure templates
 templates = Jinja2Templates(directory=str(project_root / "templates"))
 
-# Formatos de áudio aceitos
+# Accepted audio formats
 ALLOWED_AUDIO_FORMATS = {
     "audio/mpeg",  # MP3
     "audio/wav",   # WAV
-    "audio/x-wav", # WAV alternativo
+    "audio/x-wav", # WAV alternative
     "audio/flac",  # FLAC
     "audio/mp4",   # M4A
     "audio/aac",   # AAC
 }
 
-# Extensões de arquivo aceitas
+# Accepted file extensions
 ALLOWED_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a", ".aac"}
 
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
-    """Página principal da aplicação"""
+    """Main application page"""
     return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.get("/api/stems")
 async def get_available_stems():
     """
-    Endpoint para obter informações sobre os stems disponíveis.
+    Endpoint to get information about available stems.
     
     Returns:
-        JSON com informações dos stems disponíveis
+        JSON with available stems information
     """
     from src.core import AVAILABLE_STEMS, AudioSeparator
     
@@ -79,79 +79,79 @@ async def get_available_stems():
 @app.post("/api/separate")
 async def separate_audio(
     file: UploadFile = File(...),
-    stems: str = Form(default="vocals")  # String com stems separados por vírgula
+    stems: str = Form(default="vocals")  # String with stems separated by comma
 ):
     """
-    Endpoint para upload e separação de áudio com seleção de stems.
+    Endpoint for audio upload and separation with stem selection.
     
     Args:
-        file: Arquivo de áudio enviado pelo usuário
-        stems: String com stems separados por vírgula (ex: "vocals,instrumental")
+        file: Audio file sent by user
+        stems: String with stems separated by comma (ex: "vocals,instrumental")
         
     Returns:
-        JSON com URLs para download dos arquivos processados
+        JSON with URLs for downloading processed files
     """
     try:
-        # Importar depois de garantir que o módulo está disponível
+        # Import after ensuring module is available
         from src.core import separate_audio as core_separate_audio, AVAILABLE_STEMS, get_audio_separator
         
-        # Validar tipo de arquivo
+        # Validate file type
         if file.content_type not in ALLOWED_AUDIO_FORMATS:
-            # Verificar também pela extensão como fallback
+            # Also check by extension as fallback
             file_extension = Path(file.filename).suffix.lower()
             if file_extension not in ALLOWED_EXTENSIONS:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Formato de arquivo não suportado. Use: {', '.join(ALLOWED_EXTENSIONS)}"
+                    detail=f"Unsupported file format. Use: {', '.join(ALLOWED_EXTENSIONS)}"
                 )
         
-        # Verificar tamanho do arquivo (limite de 100MB)
+        # Check file size (100MB limit)
         if hasattr(file, 'size') and file.size > 100 * 1024 * 1024:
             raise HTTPException(
                 status_code=400,
-                detail="Arquivo muito grande. Limite máximo: 100MB"
+                detail="File too large. Maximum limit: 100MB"
             )
         
-        # Processar lista de stems
+        # Process stems list
         selected_stems = [stem.strip() for stem in stems.split(",") if stem.strip()]
         if not selected_stems:
-            selected_stems = ["vocals"]  # Padrão
+            selected_stems = ["vocals"]  # Default
         
-        # Validar stems
+        # Validate stems
         invalid_stems = [stem for stem in selected_stems if stem not in AVAILABLE_STEMS]
         if invalid_stems:
             raise HTTPException(
                 status_code=400,
-                detail=f"Stems inválidos: {invalid_stems}. Disponíveis: {list(AVAILABLE_STEMS.keys())}"
+                detail=f"Invalid stems: {invalid_stems}. Available: {list(AVAILABLE_STEMS.keys())}"
             )
         
-        logger.info(f"Processando arquivo: {file.filename} com stems: {selected_stems}")
+        logger.info(f"Processing file: {file.filename} with stems: {selected_stems}")
         
-        # Obter separador singleton
+        # Get singleton separator
         separator = get_audio_separator()
         
-        # Estimar tempo de processamento
+        # Estimate processing time
         processing_time = separator.estimate_processing_time(selected_stems)
-        logger.info(f"Tempo estimado de processamento: {processing_time}")
+        logger.info(f"Estimated processing time: {processing_time}")
         
-        # Criar arquivo temporário
+        # Create temporary file
         with tempfile.NamedTemporaryFile(delete=False, suffix=Path(file.filename).suffix) as temp_file:
             try:
-                # Salvar arquivo enviado no arquivo temporário
+                # Save uploaded file to temporary file
                 content = await file.read()
                 temp_file.write(content)
                 temp_file.flush()
                 
                 temp_file_path = temp_file.name
                 
-                logger.info("Arquivo salvo temporariamente, iniciando separação...")
+                logger.info("File saved temporarily, starting separation...")
                 
-                # Processar separação de áudio usando o separador
+                # Process audio separation using the separator
                 result_paths = separator.separate_stems(temp_file_path, selected_stems)
                 
-                logger.info("Separação concluída com sucesso!")
+                logger.info("Separation completed successfully!")
                 
-                # Construir resposta
+                # Build response
                 base_url = "/"
                 files_data = {}
                 
@@ -166,48 +166,48 @@ async def separate_audio(
                 
                 return {
                     "success": True,
-                    "message": "Separação concluída com sucesso!",
+                    "message": "Separation completed successfully!",
                     "files": files_data,
                     "processing_time": processing_time,
                     "stems_processed": selected_stems
                 }
                 
             finally:
-                # Limpar arquivo temporário
+                # Clean up temporary file
                 try:
                     os.unlink(temp_file_path)
-                    logger.info("Arquivo temporário removido")
+                    logger.info("Temporary file removed")
                 except OSError as e:
-                    logger.warning(f"Erro ao remover arquivo temporário: {e}")
+                    logger.warning(f"Error removing temporary file: {e}")
                     
     except HTTPException:
         # Re-raise HTTP exceptions
         raise
     except Exception as e:
-        logger.error(f"Erro durante processamento: {str(e)}")
+        logger.error(f"Error during processing: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Erro interno do servidor: {str(e)}"
+            detail=f"Internal server error: {str(e)}"
         )
 
 
 @app.post("/api/separate-youtube")
 async def separate_youtube_audio(
     url: str = Form(...),
-    stems: str = Form(default="vocals")  # String com stems separados por vírgula
+    stems: str = Form(default="vocals")  # String with stems separated by comma
 ):
     """
-    Endpoint para download e separação de áudio do YouTube com seleção de stems.
+    Endpoint for YouTube audio download and separation with stem selection.
     
     Args:
-        url: URL do vídeo do YouTube
-        stems: String com stems separados por vírgula (ex: "vocals,instrumental")
+        url: YouTube video URL
+        stems: String with stems separated by comma (ex: "vocals,instrumental")
         
     Returns:
-        JSON com URLs para download dos arquivos processados
+        JSON with URLs for downloading processed files
     """
     try:
-        # Importar depois de garantir que o módulo está disponível
+        # Import after ensuring module is available
         from src.core import (
             separate_audio as core_separate_audio, 
             download_youtube_audio, 
@@ -216,67 +216,67 @@ async def separate_youtube_audio(
             YouTubeDownloader
         )
         
-        # Criar instância do downloader
+        # Create downloader instance
         youtube_downloader = YouTubeDownloader()
         
-        # Validar URL
+        # Validate URL
         if not youtube_downloader.validate_youtube_url(url):
             raise HTTPException(
                 status_code=400,
-                detail="URL do YouTube inválida. Use links como: https://www.youtube.com/watch?v=..."
+                detail="Invalid YouTube URL. Use links like: https://www.youtube.com/watch?v=..."
             )
         
-        # Processar lista de stems
+        # Process stems list
         selected_stems = [stem.strip() for stem in stems.split(",") if stem.strip()]
         if not selected_stems:
-            selected_stems = ["vocals"]  # Padrão
+            selected_stems = ["vocals"]  # Default
         
-        # Validar stems
+        # Validate stems
         invalid_stems = [stem for stem in selected_stems if stem not in AVAILABLE_STEMS]
         if invalid_stems:
             raise HTTPException(
                 status_code=400,
-                detail=f"Stems inválidos: {invalid_stems}. Disponíveis: {list(AVAILABLE_STEMS.keys())}"
+                detail=f"Invalid stems: {invalid_stems}. Available: {list(AVAILABLE_STEMS.keys())}"
             )
         
-        logger.info(f"Processando URL do YouTube: {url} com stems: {selected_stems}")
+        logger.info(f"Processing YouTube URL: {url} with stems: {selected_stems}")
         
-        # Obter separador singleton
+        # Get singleton separator
         separator = get_audio_separator()
         
-        # Obter informações do vídeo primeiro
+        # Get video information first
         video_info = youtube_downloader.get_video_info(url)
         if not video_info:
             raise HTTPException(
                 status_code=400,
-                detail="Não foi possível acessar o vídeo. Verifique se é público e acessível."
+                detail="Could not access video. Check if it's public and accessible."
             )
         
-        # Verificar duração (limite de 10 minutos)
+        # Check duration (10 minute limit)
         if video_info['duration'] > 600:
             raise HTTPException(
                 status_code=400,
-                detail=f"Vídeo muito longo ({video_info['duration']//60}:{video_info['duration']%60:02d}). Limite: 10 minutos."
+                detail=f"Video too long ({video_info['duration']//60}:{video_info['duration']%60:02d}). Limit: 10 minutes."
             )
         
-        # Estimar tempo de processamento
+        # Estimate processing time
         processing_time = separator.estimate_processing_time(selected_stems)
-        logger.info(f"Tempo estimado de processamento: {processing_time}")
+        logger.info(f"Estimated processing time: {processing_time}")
         
-        logger.info(f"Baixando áudio: {video_info['title']}")
+        logger.info(f"Downloading audio: {video_info['title']}")
         
-        # Baixar áudio do YouTube
+        # Download audio from YouTube
         temp_audio_path, video_data = download_youtube_audio(url)
         
         try:
-            logger.info("Arquivo baixado, iniciando separação...")
+            logger.info("File downloaded, starting separation...")
             
-            # Processar separação de áudio usando o separador criado
+            # Process audio separation using the created separator
             result_paths = separator.separate_stems(temp_audio_path, selected_stems)
             
-            logger.info("Separação concluída com sucesso!")
+            logger.info("Separation completed successfully!")
             
-            # Construir resposta
+            # Build response
             base_url = "/"
             files_data = {}
             
@@ -291,7 +291,7 @@ async def separate_youtube_audio(
             
             return {
                 "success": True,
-                "message": "Separação concluída com sucesso!",
+                "message": "Separation completed successfully!",
                 "files": files_data,
                 "processing_time": processing_time,
                 "stems_processed": selected_stems,
@@ -299,23 +299,23 @@ async def separate_youtube_audio(
             }
             
         finally:
-            # Limpar arquivo temporário do YouTube
+            # Clean up temporary YouTube file
             youtube_downloader.cleanup_file(temp_audio_path)
             
     except HTTPException:
         # Re-raise HTTP exceptions
         raise
     except Exception as e:
-        logger.error(f"Erro durante processamento do YouTube: {str(e)}")
+        logger.error(f"Error during YouTube processing: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Erro interno do servidor: {str(e)}"
+            detail=f"Internal server error: {str(e)}"
         )
 
 
 @app.get("/health")
 async def health_check():
-    """Endpoint de verificação de saúde da aplicação"""
+    """Application health check endpoint"""
     return {"status": "healthy", "message": "Voice Separator API is running"}
 
 

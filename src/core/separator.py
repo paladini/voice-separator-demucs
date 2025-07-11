@@ -12,18 +12,18 @@ import torch
 from pydub import AudioSegment
 import torchaudio
 
-# Configurar logging
+# Configure logging
 logger = logging.getLogger(__name__)
 
-# Usar apenas o modelo básico que funciona
+# Use only the basic working model
 DEFAULT_MODEL = 'mdx_extra_q'
-# Definir stems disponíveis e suas configurações
+# Define available stems and their configurations
 AVAILABLE_STEMS = {
-    'drums': {'index': 0, 'name': 'Bateria', 'icon': '🥁'},
-    'bass': {'index': 1, 'name': 'Baixo', 'icon': '🎸'},
-    'other': {'index': 2, 'name': 'Outros', 'icon': '🎵'},
-    'vocals': {'index': 3, 'name': 'Vocais', 'icon': '🎤'},
-    'instrumental': {'name': 'Instrumental', 'icon': '🎹'}  # Combinação de drums + bass + other
+    'drums': {'index': 0, 'name': 'Drums', 'icon': '🥁'},
+    'bass': {'index': 1, 'name': 'Bass', 'icon': '🎸'},
+    'other': {'index': 2, 'name': 'Other', 'icon': '🎵'},
+    'vocals': {'index': 3, 'name': 'Vocals', 'icon': '🎤'},
+    'instrumental': {'name': 'Instrumental', 'icon': '🎹'}  # Combination of drums + bass + other
 }
 
 
@@ -32,30 +32,30 @@ class AudioSeparator:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Configurar otimizações de GPU
+        # Configure GPU optimizations
         if torch.cuda.is_available():
             torch.backends.cudnn.benchmark = True
             torch.backends.cudnn.deterministic = False
         
-        # Usar sempre o modelo básico que funciona
+        # Always use the basic working model
         self.model_name = DEFAULT_MODEL
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         
-        # Carregar o modelo
+        # Load the model
         try:
-            logger.info(f"🔄 Carregando modelo básico '{self.model_name}'...")
+            logger.info(f"🔄 Loading basic model '{self.model_name}'...")
             self.model = pretrained.get_model(self.model_name)
             self.model.to(self.device)
             self.model.eval()
             
-            logger.info(f"✅ Modelo carregado: {self.model_name}")
-            logger.info(f"Dispositivo: {self.device}")
+            logger.info(f"✅ Model loaded: {self.model_name}")
+            logger.info(f"Device: {self.device}")
             if torch.cuda.is_available():
-                logger.info(f"GPU detectada: {torch.cuda.get_device_name()}")
+                logger.info(f"GPU detected: {torch.cuda.get_device_name()}")
                 
         except Exception as e:
-            logger.error(f"❌ Erro ao carregar modelo: {e}")
-            raise Exception(f"Não foi possível carregar o modelo: {e}")
+            logger.error(f"❌ Error loading model: {e}")
+            raise Exception(f"Failed to load model: {e}")
 
     def separate_stems(
         self, 
@@ -63,58 +63,58 @@ class AudioSeparator:
         selected_stems: List[str] = None
     ) -> Dict[str, str]:
         """
-        Separa o áudio nos stems selecionados usando o modelo Demucs.
+        Separates audio into selected stems using the Demucs model.
         
         Args:
-            input_file_path: Caminho para o arquivo de áudio de entrada
-            selected_stems: Lista de stems para extrair. Se None, extrai apenas 'vocals'
+            input_file_path: Path to the input audio file
+            selected_stems: List of stems to extract. If None, extracts only 'vocals'
             
         Returns:
-            Dict com os caminhos relativos para os arquivos gerados
+            Dict with relative paths to the generated files
             
         Raises:
-            ValueError: Se o arquivo de entrada não for válido ou stems inválidos
-            Exception: Para outros erros durante o processamento
+            ValueError: If the input file is invalid or stems are invalid
+            Exception: For other errors during processing
         """
         try:
-            # Validar entrada
+            # Validate input
             if not os.path.exists(input_file_path):
-                raise ValueError(f"Arquivo não encontrado: {input_file_path}")
+                raise ValueError(f"File not found: {input_file_path}")
             
-            # Se não especificado, usar apenas vocals por padrão
+            # If not specified, use only vocals by default
             if selected_stems is None:
                 selected_stems = ['vocals']
             
-            # Validar stems selecionados
+            # Validate selected stems
             invalid_stems = [stem for stem in selected_stems if stem not in AVAILABLE_STEMS]
             if invalid_stems:
-                raise ValueError(f"Stems inválidos: {invalid_stems}. Disponíveis: {list(AVAILABLE_STEMS.keys())}")
+                raise ValueError(f"Invalid stems: {invalid_stems}. Available: {list(AVAILABLE_STEMS.keys())}")
             
-            # Gerar ID único para os arquivos de saída
+            # Generate unique ID for output files
             unique_id = str(uuid.uuid4())[:8]
             
-            logger.info(f"Processando stems: {selected_stems}")
+            logger.info(f"Processing stems: {selected_stems}")
             
-            # Criar diretório temporário para o processamento
+            # Create temporary directory for processing
             with tempfile.TemporaryDirectory() as temp_dir:
                 temp_path = Path(temp_dir)
                 
-                logger.info("Carregando arquivo de áudio...")
-                # Carregar o áudio
+                logger.info("Loading audio file...")
+                # Load the audio
                 audio_file = AudioFile(input_file_path)
                 wav_data = audio_file.read()
                 
-                # Aplicar o modelo para separação
-                logger.info("Iniciando separação de áudio...")
+                # Apply model for separation
+                logger.info("Starting audio separation...")
                 
-                # Garantir que wav_data está no device correto
+                # Ensure wav_data is on the correct device
                 if wav_data.device != torch.device(self.device):
                     wav_data = wav_data.to(self.device)
                 
-                logger.info(f"Tensor de entrada: {wav_data.shape}, device: {wav_data.device}, dtype: {wav_data.dtype}")
+                logger.info(f"Input tensor: {wav_data.shape}, device: {wav_data.device}, dtype: {wav_data.dtype}")
                 
-                # Usar separação simples sempre
-                logger.info("🔄 Processando com modelo básico...")
+                # Always use simple separation
+                logger.info("🔄 Processing with basic model...")
                 
                 with torch.amp.autocast('cuda', enabled=torch.cuda.is_available()):
                     sources = apply_model(
@@ -126,52 +126,52 @@ class AudioSeparator:
                         overlap=0.25
                     )
                 
-                # Normalizar formato do tensor de forma simples
-                logger.info(f"Formato original: {sources.shape}")
+                # Normalize tensor format simply
+                logger.info(f"Original format: {sources.shape}")
                 
-                # Se tensor tem 4 dimensões [batch, sources, channels, length], remover batch
+                # If tensor has 4 dimensions [batch, sources, channels, length], remove batch
                 if len(sources.shape) == 4 and sources.shape[0] == 1:
                     sources = sources[0]
-                    logger.info(f"Batch removido: {sources.shape}")
+                    logger.info(f"Batch removed: {sources.shape}")
                 
-                # Verificar se temos formato [sources, channels, length]
+                # Check if we have format [sources, channels, length]
                 if len(sources.shape) != 3:
-                    raise ValueError(f"Formato inesperado: {sources.shape}. Esperado: [sources, channels, length]")
+                    raise ValueError(f"Unexpected format: {sources.shape}. Expected: [sources, channels, length]")
                 
                 num_sources, num_channels, audio_length = sources.shape
-                logger.info(f"✅ Tensor processado: {num_sources} sources, {num_channels} channels, {audio_length} samples")
+                logger.info(f"✅ Tensor processed: {num_sources} sources, {num_channels} channels, {audio_length} samples")
                 
-                # Verificar se temos o número esperado de stems
+                # Check if we have the expected number of stems
                 if num_sources < 4:
-                    raise ValueError(f"Modelo retornou {num_sources} sources. Esperado: 4 (drums, bass, other, vocals)")
+                    raise ValueError(f"Model returned {num_sources} sources. Expected: 4 (drums, bass, other, vocals)")
                 
-                # Processar cada stem selecionado
+                # Process each selected stem
                 result_paths = {}
                 
                 for stem in selected_stems:
-                    logger.info(f"🎵 Processando stem: {stem}")
+                    logger.info(f"🎵 Processing stem: {stem}")
                     
                     if stem == 'instrumental':
-                        # Instrumental é a combinação de drums + bass + other
+                        # Instrumental is the combination of drums + bass + other
                         audio_data = sources[0] + sources[1] + sources[2]
                         filename = f"instrumental_{unique_id}.mp3"
                     else:
-                        # Stem individual
+                        # Individual stem
                         stem_index = AVAILABLE_STEMS[stem]['index']
                         audio_data = sources[stem_index]
                         filename = f"{stem}_{unique_id}.mp3"
                     
-                    # Mover para CPU e garantir formato correto
+                    # Move to CPU and ensure correct format
                     audio_data = audio_data.cpu()
                     if audio_data.dtype == torch.float16:
                         audio_data = audio_data.float()
                     
-                    # Salvar arquivo WAV temporário
+                    # Save temporary WAV file
                     wav_path = temp_path / f"{stem}_{unique_id}.wav"
                     sample_rate = getattr(self.model, 'samplerate', 44100)
                     torchaudio.save(str(wav_path), audio_data, sample_rate=sample_rate)
                     
-                    # Converter para MP3
+                    # Convert to MP3
                     mp3_path = self.output_dir / filename
                     audio_segment = AudioSegment.from_wav(str(wav_path))
                     audio_segment.export(
@@ -181,169 +181,169 @@ class AudioSeparator:
                         parameters=["-q:a", "4"]
                     )
                     
-                    # Adicionar ao resultado
+                    # Add to result
                     result_paths[stem] = f"static/output/{filename}"
-                    logger.info(f"✅ Stem {stem} processado: {filename}")
+                    logger.info(f"✅ Stem {stem} processed: {filename}")
                 
-                logger.info("✅ Separação concluída com sucesso!")
+                logger.info("✅ Separation completed successfully!")
                 
-                # Limpar cache de GPU
+                # Clear GPU cache
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
                 
                 return result_paths
                 
         except Exception as e:
-            logger.error(f"Erro durante a separação: {str(e)}")
-            raise Exception(f"Erro durante a separação de áudio: {str(e)}")
+            logger.error(f"Error during separation: {str(e)}")
+            raise Exception(f"Error during audio separation: {str(e)}")
 
     def _normalize_tensor_format(self, sources):
         """
-        Normaliza formato do tensor - versão ULTRA SIMPLES.
+        Normalizes tensor format - ULTRA SIMPLE version.
         """
         logger.info(f"Tensor shape: {sources.shape}")
         
-        # Apenas remover batch dimension se necessário
+        # Only remove batch dimension if necessary
         if len(sources.shape) == 4:
             sources = sources.squeeze(0)
         
         if len(sources.shape) != 3:
-            raise ValueError(f"Formato tensor inválido: {sources.shape}")
+            raise ValueError(f"Invalid tensor format: {sources.shape}")
         
         return sources
         if len(sources.shape) != 3:
-            raise ValueError(f"Formato inesperado: {sources.shape}. Esperado 3D após remoção de batch.")
+            raise ValueError(f"Unexpected format: {sources.shape}. Expected 3D after batch removal.")
         
         return sources
 
     def _needs_full_separation(self, selected_stems: List[str]) -> bool:
         """
-        Verifica se é necessário fazer separação completa ou se pode otimizar.
+        Checks if full separation is needed or if it can be optimized.
         
         Returns:
-            True se precisa separar todos os 4 stems
-            False se pode otimizar para stems específicos
+            True if all 4 stems need to be separated
+            False if it can be optimized for specific stems
         """
-        # TEMPORARIAMENTE FORÇAR SEPARAÇÃO COMPLETA PARA TODOS OS MODELOS
-        # Isso garante estabilidade máxima e evita erros de tensor
-        logger.info(f"🔒 Forçando separação completa para garantir estabilidade (modelo: {self.model_name})")
+        # TEMPORARILY FORCE FULL SEPARATION FOR ALL MODELS
+        # This ensures maximum stability and avoids tensor errors
+        logger.info(f"🔒 Forcing full separation to ensure stability (model: {self.model_name})")
         return True
         
-        # O código abaixo pode ser habilitado no futuro quando a otimização estiver 100% estável
+        # The code below can be enabled in the future when optimization is 100% stable
         """
-        # Modelos mais complexos sempre precisam de separação completa
+        # More complex models always need full separation
         complex_models = ['htdemucs', 'htdemucs_ft']
         if self.model_name in complex_models:
-            logger.info(f"Modelo {self.model_name} requer separação completa")
+            logger.info(f"Model {self.model_name} requires full separation")
             return True
         
-        # Para modelos MDX, pode otimizar em casos específicos
-        # Se só quer vocals, pode otimizar
+        # For MDX models, can optimize in specific cases
+        # If only wants vocals, can optimize
         if selected_stems == ['vocals']:
             return False
             
-        # Se só quer instrumental, pode otimizar (= não vocals)
+        # If only wants instrumental, can optimize (= not vocals)
         if selected_stems == ['instrumental']:
             return False
             
-        # Se quer vocals + instrumental, pode otimizar
+        # If wants vocals + instrumental, can optimize
         if set(selected_stems) == {'vocals', 'instrumental'}:
             return False
             
-        # Para outros casos, precisa da separação completa
+        # For other cases, needs full separation
         return True
         """
 
     def _separate_optimized(self, wav_data, selected_stems: List[str]):
         """
-        Separação otimizada para casos específicos usando modelo de vocals apenas.
+        Optimized separation for specific cases using vocals-only model.
         """
-        logger.info("🚀 Usando separação OTIMIZADA (apenas vocals)")
+        logger.info("🚀 Using OPTIMIZED separation (vocals only)")
         
-        # Para casos otimizados, usar modelo específico de vocals se disponível
-        # Por enquanto, usar o modelo completo mas com processamento mais rápido
+        # For optimized cases, use specific vocals model if available
+        # For now, use the complete model but with faster processing
         with torch.amp.autocast('cuda', enabled=torch.cuda.is_available()):
             sources = apply_model(
                 self.model, 
                 wav_data, 
                 device=self.device, 
                 progress=True,
-                segment=15,  # Segments maiores para vocals
-                overlap=0.1   # Menos overlap para velocidade
+                segment=15,  # Larger segments for vocals
+                overlap=0.1   # Less overlap for speed
             )
         
-        # Normalizar formato do tensor usando o método robusto
+        # Normalize tensor format using robust method
         sources = self._normalize_tensor_format(sources)
         
-        # Verificar se temos o número esperado de stems
+        # Check if we have the expected number of stems
         num_sources, num_channels, audio_length = sources.shape
         if num_sources < 4:
-            raise ValueError(f"Modelo retornou {num_sources} sources (otimizado). Esperado: 4 (drums, bass, other, vocals)")
+            raise ValueError(f"Model returned {num_sources} sources (optimized). Expected: 4 (drums, bass, other, vocals)")
             
         return sources
 
     @staticmethod
     def get_available_stems() -> Dict[str, Dict[str, str]]:
-        """Retorna informações sobre os stems disponíveis."""
+        """Returns information about available stems."""
         return AVAILABLE_STEMS
 
     def estimate_processing_time(self, selected_stems: List[str]) -> str:
         """
-        Estima o tempo de processamento baseado nos stems selecionados e modelo atual.
+        Estimates processing time based on selected stems and current model.
         """
-        # Fatores baseados no modelo
+        # Factors based on model
         model_speed_factor = {
-            'mdx_extra_q': 1.0,    # Mais rápido
-            'mdx': 1.5,            # Moderado
-            'htdemucs': 2.5,       # Lento
-            'htdemucs_ft': 4.0     # Muito lento
+            'mdx_extra_q': 1.0,    # Faster
+            'mdx': 1.5,            # Moderate
+            'htdemucs': 2.5,       # Slow
+            'htdemucs_ft': 4.0     # Very slow
         }
         
-        # Fator baseado no dispositivo
+        # Factor based on device
         device_factor = 1.0 if torch.cuda.is_available() else 2.0
         
-        # Fator baseado na seleção de stems
+        # Factor based on stem selection
         stem_factor = 1.0
         if len(selected_stems) == 1 and selected_stems[0] == 'vocals':
-            stem_factor = 1.0  # Otimizado
+            stem_factor = 1.0  # Optimized
         elif len(selected_stems) == 1 and selected_stems[0] == 'instrumental':
-            stem_factor = 1.0  # Otimizado
+            stem_factor = 1.0  # Optimized
         elif len(selected_stems) == 2 and 'vocals' in selected_stems and 'instrumental' in selected_stems:
             stem_factor = 1.2  # Karaoke
         elif len(selected_stems) <= 2:
-            stem_factor = 1.5  # Poucos stems
+            stem_factor = 1.5  # Few stems
         else:
-            stem_factor = 2.0  # Múltiplos stems
+            stem_factor = 2.0  # Multiple stems
         
-        # Calcular tempo estimado em segundos
-        base_time = 30  # Tempo base para mdx_extra_q + GPU + vocals
+        # Calculate estimated time in seconds
+        base_time = 30  # Base time for mdx_extra_q + GPU + vocals
         total_factor = model_speed_factor.get(self.model_name, 2.0) * device_factor * stem_factor
         estimated_seconds = base_time * total_factor
         
-        # Converter para descrição amigável
+        # Convert to friendly description
         if estimated_seconds <= 60:
-            return "muito rápido (30-60 segundos)"
+            return "very fast (30-60 seconds)"
         elif estimated_seconds <= 120:
-            return "rápido (1-2 minutos)"
+            return "fast (1-2 minutes)"
         elif estimated_seconds <= 180:
-            return "moderado (2-3 minutos)"
+            return "moderate (2-3 minutes)"
         elif estimated_seconds <= 300:
-            return "lento (3-5 minutos)"
+            return "slow (3-5 minutes)"
         else:
-            return "muito lento (5+ minutos)"
+            return "very slow (5+ minutes)"
     
     def _cleanup_gpu_memory(self):
-        """Limpa cache de GPU para liberar memória."""
+        """Clears GPU cache to free memory."""
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
             torch.cuda.synchronize()
 
 
-# Instância global do separador (singleton)
+# Global separator instance (singleton)
 _audio_separator_instance = None
 
 def get_audio_separator():
-    """Retorna instância singleton do separador."""
+    """Returns singleton instance of the separator."""
     global _audio_separator_instance
     
     if _audio_separator_instance is None:
@@ -357,17 +357,17 @@ audio_separator = get_audio_separator()
 
 def separate_audio(input_file_path: str, selected_stems: List[str] = None) -> Dict[str, str]:
     """
-    Função de conveniência para separar áudio nos stems selecionados.
+    Convenience function to separate audio into selected stems.
     """
     separator = get_audio_separator()
     return separator.separate_stems(input_file_path, selected_stems)
 
 
-# Manter compatibilidade com a função antiga
+# Maintain compatibility with old function
 def separate_vocals(input_file_path: str) -> Tuple[str, str]:
     """
-    Função legada para compatibilidade. Separa apenas vocals e instrumental.
-    Otimizada para velocidade máxima.
+    Legacy function for compatibility. Separates only vocals and instrumental.
+    Optimized for maximum speed.
     """
     separator = get_audio_separator()
     result = separator.separate_stems(input_file_path, ['vocals', 'instrumental'])
