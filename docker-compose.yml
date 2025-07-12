@@ -9,13 +9,13 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./static/output:/app/static/output    # Processed files
-      - model-cache:/home/app/.cache          # Model cache (persistent)
+      - ./static/output:/app/static/output      # Output files (accessible on host)
+      - model-cache:/root/.cache                # Model cache (persistent)
     environment:
       - PYTHONUNBUFFERED=1
-      - TORCH_HOME=/home/app/.cache/torch
+      - TORCH_HOME=/root/.cache/torch
     restart: unless-stopped
 
-# Named volume for model cache
+# Named volumes for persistence
 volumes:
   model-cache:
