@@ -4,7 +4,7 @@ A simple and efficient web application to separate audio elements (vocals, drums
 
 ## 🎵 What it does
 
-![Voice Separator by @paladini - Main Page Interface](static/images/voice-separator-interface.png)
+![Voice Separator by @paladini - Main Page Interface](https://i.imgur.com/h1DY94R.png)
 
 - **Separate vocals** from background music (karaoke)
 - **Extract instruments** individually (drums, bass, others)
