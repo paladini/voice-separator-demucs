@@ -7,7 +7,7 @@ sdk: docker
 app_port: 7860
 pinned: false
 license: mit
-short_description: Separate vocals and instruments from audio using AI-powered Demucs model
+short_description: Separate vocals and instruments using AI
 tags:
 - audio
 - music
