@@ -4,7 +4,7 @@ A simple and efficient web application to separate audio elements (vocals, drums
 
 ## 🎵 What it does
 
-<img width="1036" height="880" alt="image" src="https://github.com/user-attachments/assets/a142eafd-0dc7-4724-925a-cf89e20fdaa9" />
+![Voice Separator by @paladini - Main Page Interface](static/images/voice-separator-main-page.png)
 
 - **Separate vocals** from background music (karaoke)
 - **Extract instruments** individually (drums, bass, others)
@@ -23,7 +23,7 @@ If you have Docker installed:
 docker compose up -d
 ```
 
-Access [http://localhost:8000](http://localhost:8000).
+Access [http://localhost:7860](http://localhost:7860).
 
 **Done!** Skip to "Usage" below.
 
@@ -49,7 +49,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Access [http://localhost:8000](http://localhost:8000).
+Access [http://localhost:7860](http://localhost:7860).
 
 ## 🎵 Usage
 
@@ -104,7 +104,7 @@ docker-compose up -d
 
 # Or using Docker directly
 docker build -t voice-separator .
-docker run -p 8000:8000 -v $(pwd)/static/output:/app/static/output voice-separator
+docker run -p 7860:7860 -v $(pwd)/static/output:/app/static/output voice-separator
 ```
 
 ### Production deployment
@@ -161,8 +161,8 @@ python main.py
 ```
 
 ### API documentation
-- Interactive docs: `http://localhost:8000/docs`
-- Alternative docs: `http://localhost:8000/redoc`
+- Interactive docs: `http://localhost:7860/docs`
+- Alternative docs: `http://localhost:7860/redoc`
 
 ## 📝 Usage notes
 

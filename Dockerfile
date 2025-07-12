@@ -51,10 +51,10 @@ RUN mkdir -p static/output && \
 ENV TORCH_HOME=/root/.cache/torch
 
 # Expor porta
-EXPOSE 8000
+EXPOSE 7860
 
 # Volumes para persistir dados
 VOLUME ["/root/.cache", "/app/static/output"]
 
 # Comando para iniciar a aplicação
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]

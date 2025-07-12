@@ -7,7 +7,7 @@ services:
     build: .
     container_name: voice-separator
     ports:
-      - "8000:8000"
+      - "7860:7860"
     volumes:
       - ./static/output:/app/static/output      # Output files (accessible on host)
       - model-cache:/root/.cache                # Model cache (persistent)

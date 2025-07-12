@@ -15,7 +15,7 @@ To run:
     python main.py
     
 Or use uvicorn directly:
-    uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    uvicorn main:app --host 0.0.0.0 --port 7860 --reload
 """
 
 import sys
@@ -33,14 +33,14 @@ if __name__ == "__main__":
     
     print("🎵 Starting Voice Separator...")
     print("📁 Organized structure: src/core + src/api")
-    print("🚀 Access: http://localhost:8000")
-    print("📖 API Docs: http://localhost:8000/docs")
-    print("🔍 Health Check: http://localhost:8000/health")
+    print("🚀 Access: http://localhost:7860")
+    print("📖 API Docs: http://localhost:7860/docs")
+    print("🔍 Health Check: http://localhost:7860/health")
     
     uvicorn.run(
         "main:app", 
         host="0.0.0.0", 
-        port=8000, 
+        port=7860, 
         reload=True,
         reload_dirs=["src", "templates", "static"]
     )

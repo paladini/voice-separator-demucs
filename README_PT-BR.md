@@ -18,14 +18,14 @@ Se você tem Docker instalado:
 
 ```bash
 # Baixar e executar
-docker run -p 8000:8000 voice-separator
+docker run -p 7860:7860 paladini/voice-separator
 
 # Ou construir localmente
 docker build -t voice-separator .
-docker run -p 8000:8000 voice-separator
+docker run -p 7860:7860 voice-separator
 ```
 
-Acesse: http://localhost:8000
+Acesse: http://localhost:7860
 
 ### Opção 2: Instalação Manual
 
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Acesse: http://localhost:8000
+Acesse: http://localhost:7860
 
 ## 🎯 Como usar a interface
 
