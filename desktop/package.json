@@ -1,0 +1,29 @@
+{
+  "name": "voice-separator-desktop",
+  "version": "1.0.0",
+  "description": "Voice Separator Desktop Application",
+  "main": "index.js",
+  "scripts": {
+    "tauri": "@tauri-apps/cli",
+    "tauri:dev": "@tauri-apps/cli dev",
+    "tauri:build": "@tauri-apps/cli build",
+    "tauri:build:debug": "@tauri-apps/cli build --debug",
+    "dev": "@tauri-apps/cli dev",
+    "build": "@tauri-apps/cli build"
+  },
+  "keywords": [
+    "tauri",
+    "audio",
+    "separation",
+    "demucs",
+    "desktop"
+  ],
+  "author": "Fernando Paladini",
+  "license": "MIT",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0"
+  }
+}

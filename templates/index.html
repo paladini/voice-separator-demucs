@@ -391,6 +391,25 @@
             progressBar.style.display = show ? 'block' : 'none';
         }
 
+        // Simple download function that works in both web and Tauri
+        function handleDownload(url, filename) {
+            console.log('� Downloading:', filename);
+            
+            // Create a temporary link and click it
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.style.display = 'none';
+            
+            // Add to DOM, click, then remove
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show feedback
+            showStatus(`📥 Download started: ${filename}`, 'success');
+        }
+
         // Function to create download links
         function createDownloadLink(url, filename, type, icon = null, label = null) {
             const linkContainer = document.createElement('div');
@@ -405,10 +424,10 @@
                     <span class="download-icon">${stemIcon}</span>
                     <span class="download-label">${stemLabel}</span>
                 </div>
-                <a href="${url}" download="${filename}" class="download-link">
+                <button class="download-link" onclick="handleDownload('${url}', '${filename}')">
                     <span class="download-text">Download</span>
                     <span class="download-arrow">⬇️</span>
-                </a>
+                </button>
             `;
             
             return linkContainer;

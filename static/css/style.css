@@ -287,6 +287,10 @@ main {
     font-weight: 600;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 .download-link:hover {

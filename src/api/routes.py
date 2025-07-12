@@ -6,6 +6,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 import logging
 
 # Configurar logging
@@ -21,6 +22,15 @@ app = FastAPI(
         "name": "Fernando Paladini",
         "url": "https://github.com/paladini",
     }
+)
+
+# Add CORS middleware for Tauri desktop app compatibility
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify exact origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Create output directory if it doesn't exist (relative to project root)

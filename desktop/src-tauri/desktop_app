@@ -1,0 +1,4 @@
+#!/bin/bash
+# Wrapper script for desktop_app.py
+cd "$(dirname "$0")/.."
+python3 desktop_app.py

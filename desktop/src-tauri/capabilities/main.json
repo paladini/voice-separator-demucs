@@ -1,0 +1,9 @@
+{
+  "identifier": "main-capability",
+  "description": "Basic capability for Voice Separator",
+  "permissions": [
+    "core:default",
+    "core:window:default",
+    "core:webview:default"
+  ]
+}

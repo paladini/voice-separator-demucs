@@ -31,11 +31,12 @@ from src.api import app
 if __name__ == "__main__":
     import uvicorn
     
-    print("🎵 Starting Voice Separator...")
+    print("🎵 Starting Voice Separator - Web Server Mode...")
     print("📁 Organized structure: src/core + src/api")
     print("🚀 Access: http://localhost:7860")
     print("📖 API Docs: http://localhost:7860/docs")
     print("🔍 Health Check: http://localhost:7860/health")
+    print("💡 For desktop app, use: python desktop_app.py")
     
     uvicorn.run(
         "main:app", 

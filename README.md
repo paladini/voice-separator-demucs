@@ -42,7 +42,29 @@ A simple and efficient web application to separate audio elements (vocals, drums
 
 ## 🚀 How to use
 
-### Option 1: Docker (Recommended - Easiest)
+### Option 1: Desktop Application (Native)
+
+**Cross-platform native desktop app with AI-powered audio separation:**
+
+```bash
+# Quick setup (requires Rust + Node.js)
+git clone https://github.com/paladini/voice-separator-demucs.git
+cd voice-separator-demucs/desktop
+npm install
+npx tauri dev
+```
+
+✨ **Features:**
+- **Native desktop experience** with system tray integration
+- **Same AI models** and processing as web version
+- **Offline operation** - no internet required after setup
+- **Drag & drop** support for audio files
+- **Auto dependency management** - checks FFmpeg, Python packages
+- **Cross-platform** - Windows, macOS, Linux
+
+📖 **[Complete Desktop Setup Guide](DESKTOP_QUICKSTART.md)**
+
+### Option 2: Docker (Web Interface - Recommended for Servers)
 
 **Super simple - Just one command:**
 
@@ -71,7 +93,7 @@ docker cp voice-separator:/app/static/output ./my-separated-files/
 **If you used Method 2:**
 - Files are already in your `static/output/` folder!
 
-### Option 2: Python
+### Option 3: Python (Web Interface - Local Development)
 
 **Prerequisites:**
 - Python 3.8+

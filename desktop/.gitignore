@@ -1,0 +1,47 @@
+# Tauri build artifacts
+/target/
+/dist/
+/src-tauri/target/
+/src-tauri/Cargo.lock
+/src-tauri/gen/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Rust
+**/*.rs.bk
+
+# Tauri bundled applications (build outputs)
+*.deb
+*.rpm
+*.dmg
+*.msi
+*.exe
+*.AppImage
+*.app
+
+# Tauri development cache
+.tauri/
+/src-tauri/.cargo/
+/src-tauri/WixTools/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log

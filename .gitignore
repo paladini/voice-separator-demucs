@@ -88,3 +88,32 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+# Tauri build artifacts and cache
+desktop/src-tauri/target/
+desktop/src-tauri/Cargo.lock
+desktop/src-tauri/gen/
+desktop/node_modules/
+desktop/dist/
+desktop/.tauri/
+
+# Tauri bundled applications
+*.deb
+*.rpm
+*.dmg
+*.msi
+*.exe
+*.AppImage
+*.app
+
+# Tauri development files
+desktop/src-tauri/tauri.conf.json.bak
+desktop/src-tauri/.cargo/
+desktop/src-tauri/WixTools/
+
+# Node.js (for Tauri CLI)
+package-lock.json
+yarn.lock
+
+# Rust temporary files
+**/*.rs.bk

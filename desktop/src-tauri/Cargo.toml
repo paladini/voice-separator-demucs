@@ -1,0 +1,20 @@
+[package]
+name = "voice-separator"
+version = "1.0.0"
+description = "AI-Powered Audio Separation using Demucs"
+authors = ["Fernando Paladini <fernando.paladini@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/paladini/voice-separator-demucs"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0", features = ["tray-icon", "image-png"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
