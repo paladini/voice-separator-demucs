@@ -16,16 +16,32 @@ A simple and efficient web application to separate audio elements (vocals, drums
 
 ### Option 1: Docker (Recommended - Easiest)
 
-If you have Docker installed:
+**Super simple - Just one command:**
 
 ```bash
-# Download and run
+# Method 1: Ultra-simple (files saved inside container)
+docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator
+
+# Method 2: Using docker-compose (files accessible on your computer)
+git clone https://github.com/paladini/voice-separator-demucs.git
+cd voice-separator-demucs
 docker compose up -d
 ```
 
 Access [http://localhost:7860](http://localhost:7860).
 
-**Done!** Skip to "Usage" below.
+**Done!** If using Method 2, your files will appear in the `static/output/` folder.
+
+## 📥 Getting your files
+
+**If you used Method 1 (ultra-simple):**
+```bash
+# Copy files from container to your computer
+docker cp voice-separator:/app/static/output ./my-separated-files/
+```
+
+**If you used Method 2:**
+- Files are already in your `static/output/` folder!
 
 ### Option 2: Python
 
@@ -97,22 +113,45 @@ This application uses **Demucs**, an AI model developed by Facebook/Meta AI spec
 
 ## 🐳 Docker deployment
 
-### Quick start
-```bash
-# Using docker-compose (recommended)
-docker-compose up -d
+### Ultra-simple deployment
 
-# Or using Docker directly
-docker build -t voice-separator .
-docker run -p 7860:7860 -v $(pwd)/static/output:/app/static/output voice-separator
+**Option A: Direct from Docker Hub (no code download needed)**
+```bash
+# Ultra-simple (files stay in container)
+docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator
+
+# Recommended (files accessible on host)
+mkdir -p voice-separator-output
+docker run -d -p 7860:7860 -v $(pwd)/voice-separator-output:/app/static/output --name voice-separator paladini/voice-separator
+
+# Access: http://localhost:7860
+# Files saved to: ./voice-separator-output/ (if using second command)
 ```
 
-### Production deployment
+**Option B: Using docker-compose (with source code)**
 ```bash
-# With persistent model cache
-docker-compose -f docker-compose.yml up -d
+# Clone and run
+git clone https://github.com/paladini/voice-separator-demucs.git
+cd voice-separator-demucs
+docker compose up -d
 
-# Models are cached in a Docker volume for better performance
+# Access: http://localhost:7860
+# Files saved to: ./static/output/
+```
+
+### Management commands
+```bash
+# Stop container
+docker stop voice-separator
+
+# Start again
+docker start voice-separator
+
+# Remove container
+docker rm voice-separator
+
+# Update to latest version
+docker pull paladini/voice-separator:latest
 ```
 
 ## 🆘 Troubleshooting
@@ -180,4 +219,4 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ---
 
-📖 **[Versão em Português](README_PT-BR.md)**
+📖 **[Versão em Português do Brasil](README_PT-BR.md)**

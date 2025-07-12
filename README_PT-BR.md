@@ -14,18 +14,21 @@ Uma aplicação web simples e eficiente para separar elementos de áudio (vocais
 
 ### Opção 1: Docker (Recomendado - Mais Fácil)
 
-Se você tem Docker instalado:
+**Super simples - apenas um comando:**
 
 ```bash
-# Baixar e executar
-docker run -p 7860:7860 paladini/voice-separator
+# Método mais simples (arquivos salvos dentro do container)
+docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator
 
-# Ou construir localmente
-docker build -t voice-separator .
-docker run -p 7860:7860 voice-separator
+# Método recomendado (arquivos acessíveis no seu computador)
+git clone https://github.com/paladini/voice-separator-demucs.git
+cd voice-separator-demucs
+docker compose up -d
 ```
 
 Acesse: http://localhost:7860
+
+**Pronto!** Se usar o segundo método, seus arquivos aparecerão na pasta `output/`.
 
 ### Opção 2: Instalação Manual
 
@@ -97,7 +100,16 @@ Acesse: http://localhost:7860
 
 *Tempos podem variar conforme o hardware do seu computador*
 
-### Como usar
+## 📥 Como baixar os arquivos
+
+**Se usou o método simples (sem pasta output):**
+```bash
+# Copiar arquivos do container para seu computador
+docker cp voice-separator:/app/static/output ./meus-arquivos/
+```
+
+**Se usou o método recomendado:**
+- Os arquivos já estão na pasta `output/` do seu computador!
 
 ## 📋 Formatos aceitos
 
