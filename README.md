@@ -1,31 +1,3 @@
----
-title: Voice Separator - AI-Powered Audio Separation
-emoji: 🎤
-colorFrom: blue
-colorTo: green
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
-short_description: Separate vocals and instruments using AI
-tags:
-- audio
-- music
-- demucs
-- source-separation
-- vocals
-- karaoke
-- fastapi
-- pytorch
-- ai
-- machine-learning
-models:
-- facebook/demucs
-datasets: []
-app_file: main.py
-python_version: "3.9"
----
-
 # Voice Separator - AI-Powered Audio Separation
 
 A simple and efficient web application to separate audio elements (vocals, drums, bass, other instruments) from music using artificial intelligence.
