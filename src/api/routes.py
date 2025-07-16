@@ -79,7 +79,8 @@ async def get_available_stems():
 @app.post("/api/separate")
 async def separate_audio(
     file: UploadFile = File(...),
-    stems: str = Form(default="vocals")  # String with stems separated by comma
+    stems: str = Form(default="vocals"),  # String with stems separated by comma
+    model: str = Form(default="mdx_extra_q")
 ):
     """
     Endpoint for audio upload and separation with stem selection.
@@ -94,6 +95,10 @@ async def separate_audio(
     try:
         # Import after ensuring module is available
         from src.core import separate_audio as core_separate_audio, AVAILABLE_STEMS, get_audio_separator
+        # Supported models
+        SUPPORTED_MODELS = ["mdx_extra_q", "mdx", "htdemucs", "htdemucs_ft"]
+        if model not in SUPPORTED_MODELS:
+            raise HTTPException(status_code=400, detail=f"Invalid model: {model}. Supported: {SUPPORTED_MODELS}")
         
         # Validate file type
         if file.content_type not in ALLOWED_AUDIO_FORMATS:
@@ -128,7 +133,11 @@ async def separate_audio(
         logger.info(f"Processing file: {file.filename} with stems: {selected_stems}")
         
         # Get singleton separator
-        separator = get_audio_separator()
+        try:
+            separator = get_audio_separator(model)
+        except Exception as e:
+            logger.error(f"Model/device error: {e}")
+            raise HTTPException(status_code=400, detail=str(e))
         
         # Estimate processing time
         processing_time = separator.estimate_processing_time(selected_stems)
@@ -194,7 +203,8 @@ async def separate_audio(
 @app.post("/api/separate-youtube")
 async def separate_youtube_audio(
     url: str = Form(...),
-    stems: str = Form(default="vocals")  # String with stems separated by comma
+    stems: str = Form(default="vocals"),  # String with stems separated by comma
+    model: str = Form(default="mdx_extra_q")
 ):
     """
     Endpoint for YouTube audio download and separation with stem selection.
@@ -215,6 +225,9 @@ async def separate_youtube_audio(
             get_audio_separator,
             YouTubeDownloader
         )
+        SUPPORTED_MODELS = ["mdx_extra_q", "mdx", "htdemucs", "htdemucs_ft"]
+        if model not in SUPPORTED_MODELS:
+            raise HTTPException(status_code=400, detail=f"Invalid model: {model}. Supported: {SUPPORTED_MODELS}")
         
         # Create downloader instance
         youtube_downloader = YouTubeDownloader()
@@ -242,7 +255,11 @@ async def separate_youtube_audio(
         logger.info(f"Processing YouTube URL: {url} with stems: {selected_stems}")
         
         # Get singleton separator
-        separator = get_audio_separator()
+        try:
+            separator = get_audio_separator(model)
+        except Exception as e:
+            logger.error(f"Model/device error: {e}")
+            raise HTTPException(status_code=400, detail=str(e))
         
         # Get video information first
         video_info = youtube_downloader.get_video_info(url)

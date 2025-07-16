@@ -23,6 +23,24 @@
             </div>
 
             <!-- Stem Selection Section -->
+            <!-- Model Selection Section -->
+            <div class="model-selection-section">
+                <h3>🧠 Select AI Model:</h3>
+                <select id="modelSelect" name="model" class="model-dropdown">
+                    <option value="mdx_extra_q" selected>Demucs CPU Lite (Fastest, CPU only)</option>
+                    <option value="mdx">Demucs v3 (Fast, GPU recommended)</option>
+                    <option value="htdemucs">Demucs v4 (Medium, GPU required)</option>
+                    <option value="htdemucs_ft">Demucs HD (Best Quality, GPU required)</option>
+                </select>
+                <div class="model-info">
+                    <ul>
+                        <li><strong>Demucs CPU Lite:</strong> Fastest, runs on any CPU.</li>
+                        <li><strong>Demucs v3:</strong> Fast, GPU recommended for best speed.</li>
+                        <li><strong>Demucs v4:</strong> Medium speed, <span style="color:red">GPU required</span>.</li>
+                        <li><strong>Demucs HD:</strong> Best quality, <span style="color:red">GPU required</span>.</li>
+                    </ul>
+                </div>
+            </div>
             <div class="stems-selection-section">
                 <h3>🎛️ Select which channels to extract:</h3>
                 <div class="stems-options">
@@ -182,6 +200,8 @@
         const videoTitle = document.getElementById('videoTitle');
         const videoDuration = document.getElementById('videoDuration');
         const videoUploader = document.getElementById('videoUploader');
+        // Model selection
+        const modelSelect = document.getElementById('modelSelect');
         
         // Stem selection elements
         const stemCheckboxes = document.querySelectorAll('input[name="stems"]');
@@ -432,7 +452,7 @@
 
             const formData = new FormData(uploadForm);
             formData.append('stems', selectedStems.join(','));
-            
+            formData.append('model', modelSelect.value);
             await processAudio('/api/separate', formData, 'Uploading file...', separateBtn);
         });
 
@@ -455,7 +475,7 @@
             const formData = new FormData();
             formData.append('url', url);
             formData.append('stems', selectedStems.join(','));
-            
+            formData.append('model', modelSelect.value);
             await processAudio('/api/separate-youtube', formData, 'Downloading from YouTube...', youtubeBtn);
         });
 
