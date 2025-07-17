@@ -28,31 +28,32 @@ AVAILABLE_STEMS = {
 
 
 class AudioSeparator:
-    def __init__(self, output_dir: str = "static/output"):
+    def __init__(self, output_dir: str = "static/output", model_name: str = DEFAULT_MODEL):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+        self.model_name = model_name
         # Configure GPU optimizations
         if torch.cuda.is_available():
             torch.backends.cudnn.benchmark = True
             torch.backends.cudnn.deterministic = False
-        
-        # Always use the basic working model
-        self.model_name = DEFAULT_MODEL
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        
+        # Device selection
+        if model_name in ["mdx_extra_q", "mdx"]:
+            self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            # htdemucs and htdemucs_ft require GPU
+            if not torch.cuda.is_available():
+                raise Exception(f"Model '{model_name}' requires a GPU, but none was detected.")
+            self.device = 'cuda'
         # Load the model
         try:
-            logger.info(f"🔄 Loading basic model '{self.model_name}'...")
+            logger.info(f"🔄 Loading model '{self.model_name}'...")
             self.model = pretrained.get_model(self.model_name)
             self.model.to(self.device)
             self.model.eval()
-            
             logger.info(f"✅ Model loaded: {self.model_name}")
             logger.info(f"Device: {self.device}")
             if torch.cuda.is_available():
                 logger.info(f"GPU detected: {torch.cuda.get_device_name()}")
-                
         except Exception as e:
             logger.error(f"❌ Error loading model: {e}")
             raise Exception(f"Failed to load model: {e}")
@@ -340,16 +341,9 @@ class AudioSeparator:
 
 
 # Global separator instance (singleton)
-_audio_separator_instance = None
-
-def get_audio_separator():
-    """Returns singleton instance of the separator."""
-    global _audio_separator_instance
-    
-    if _audio_separator_instance is None:
-        _audio_separator_instance = AudioSeparator()
-    
-    return _audio_separator_instance
+def get_audio_separator(model_name=DEFAULT_MODEL):
+    """Returns an instance of AudioSeparator for the given model."""
+    return AudioSeparator(model_name=model_name)
 
 # Compatibility - removed global instance to avoid initialization during import
 
