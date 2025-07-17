@@ -5,6 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Separator - Vocal Separation</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+    /* Modern switch toggle */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+      vertical-align: middle;
+    }
+    .switch input {display:none;}
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #6c63ff;
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    .toggle-label {
+      margin-left: 12px;
+      font-size: 1.1em;
+      color: #333;
+      vertical-align: middle;
+    }
+    .custom-select-wrapper {
+      margin: 0.5em 0 1em 0;
+      max-width: 450px;
+    }
+    .custom-select {
+      width: 100%;
+      padding: 0.5em 2em 0.5em 1em;
+      font-size: 1.1em;
+      border-radius: 8px;
+      border: 1px solid #6c63ff;
+      background: #f7f7ff url('data:image/svg+xml;utf8,<svg fill="%236c63ff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.7em center/1.2em;
+      color: #333;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      box-shadow: 0 2px 8px rgba(108,99,255,0.08);
+      transition: border-color 0.2s;
+    }
+    .custom-select:focus {
+      border-color: #4caf50;
+      outline: none;
+    }
+    .modern-model-info ul {
+      padding-left: 1.2em;
+      margin: 0.5em 0 0 0;
+    }
+    .modern-model-info li {
+      margin-bottom: 0.3em;
+      font-size: 1em;
+    }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -24,20 +96,29 @@
 
             <!-- Stem Selection Section -->
             <!-- Model Selection Section -->
-            <div class="model-selection-section">
-                <h3>🧠 Select AI Model:</h3>
-                <select id="modelSelect" name="model" class="model-dropdown">
-                    <option value="mdx_extra_q" selected>Demucs CPU Lite (Fastest, CPU only)</option>
-                    <option value="mdx">Demucs v3 (Fast, GPU recommended)</option>
-                    <option value="htdemucs">Demucs v4 (Medium, GPU required)</option>
-                    <option value="htdemucs_ft">Demucs HD (Best Quality, GPU required)</option>
-                </select>
-                <div class="model-info">
+            <div class="model-selection-toggle-section" style="margin-bottom: 30px">
+                <label class="switch">
+                    <input type="checkbox" id="enableModelSelection">
+                    <span class="slider"></span>
+                </label>
+                <span class="toggle-label"><strong>Enable model selection</strong></span>
+            </div>
+            <div class="model-selection-section" id="modelSelectionSection" style="display:none;">
+                <h3 style="margin-bottom: 0.5em;">🧠 <span style="color:#6c63ff">Select AI Model</span>:</h3>
+                <div class="custom-select-wrapper">
+                    <select id="modelSelect" name="model" class="custom-select">
+                        <option value="mdx_extra_q" selected>⚡ Demucs CPU Lite (Fastest, CPU only)</option>
+                        <option value="mdx">🚀 Demucs v3 (Fast, GPU recommended)</option>
+                        <option value="htdemucs">🎯 Demucs v4 (Medium, GPU required)</option>
+                        <option value="htdemucs_ft">🌟 Demucs HD (Best Quality, GPU required)</option>
+                    </select>
+                </div>
+                <div class="model-info modern-model-info">
                     <ul>
-                        <li><strong>Demucs CPU Lite:</strong> Fastest, runs on any CPU.</li>
-                        <li><strong>Demucs v3:</strong> Fast, GPU recommended for best speed.</li>
-                        <li><strong>Demucs v4:</strong> Medium speed, <span style="color:red">GPU required</span>.</li>
-                        <li><strong>Demucs HD:</strong> Best quality, <span style="color:red">GPU required</span>.</li>
+                        <li><span style="font-weight:bold;color:#6c63ff">⚡ Demucs CPU Lite:</span> Fastest, runs on any CPU.</li>
+                        <li><span style="font-weight:bold;color:#4caf50">🚀 Demucs v3:</span> Fast, GPU recommended for best speed.</li>
+                        <li><span style="font-weight:bold;color:#ff9800">🎯 Demucs v4:</span> Medium speed, <span style="color:red">GPU required</span>.</li>
+                        <li><span style="font-weight:bold;color:#e91e63">🌟 Demucs HD:</span> Best quality, <span style="color:red">GPU required</span>.</li>
                     </ul>
                 </div>
             </div>
@@ -55,7 +136,7 @@
                         <input type="checkbox" name="stems" value="instrumental">
                         <span class="stem-icon">🎹</span>
                         <span class="stem-name">Instrumental</span>
-                        <span class="stem-description">Music without vocals</span>
+                        <span class="stem-description">Instruments only</span>
                     </label>
                     
                     <label class="stem-option">
@@ -202,6 +283,18 @@
         const videoUploader = document.getElementById('videoUploader');
         // Model selection
         const modelSelect = document.getElementById('modelSelect');
+        const enableModelSelection = document.getElementById('enableModelSelection');
+        const modelSelectionSection = document.getElementById('modelSelectionSection');
+
+        // Toggle model selection UI
+        enableModelSelection.addEventListener('change', function() {
+            if (enableModelSelection.checked) {
+                modelSelectionSection.style.display = 'block';
+                modelSelectionSection.style.marginBottom = '20px';
+            } else {
+                modelSelectionSection.style.display = 'none';
+            }
+        });
         
         // Stem selection elements
         const stemCheckboxes = document.querySelectorAll('input[name="stems"]');
@@ -452,7 +545,12 @@
 
             const formData = new FormData(uploadForm);
             formData.append('stems', selectedStems.join(','));
-            formData.append('model', modelSelect.value);
+            // Only send model if selection is enabled
+            if (enableModelSelection.checked) {
+                formData.append('model', modelSelect.value);
+            } else {
+                formData.append('model', 'mdx_extra_q');
+            }
             await processAudio('/api/separate', formData, 'Uploading file...', separateBtn);
         });
 
@@ -475,7 +573,12 @@
             const formData = new FormData();
             formData.append('url', url);
             formData.append('stems', selectedStems.join(','));
-            formData.append('model', modelSelect.value);
+            // Only send model if selection is enabled
+            if (enableModelSelection.checked) {
+                formData.append('model', modelSelect.value);
+            } else {
+                formData.append('model', 'mdx_extra_q');
+            }
             await processAudio('/api/separate-youtube', formData, 'Downloading from YouTube...', youtubeBtn);
         });
 
