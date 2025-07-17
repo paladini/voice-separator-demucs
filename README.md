@@ -68,6 +68,21 @@ python main.py
 Access [http://localhost:7860](http://localhost:7860).
 
 ## 🎵 Usage
+### Model Selection Feature
+
+You can now choose between different AI models for separation:
+
+- **Demucs CPU Lite (mdx_extra_q):** Fastest, runs on any CPU (default).
+- **Demucs v3 (mdx):** Fast, GPU recommended for best speed.
+- **Demucs v4 (htdemucs):** Medium speed, GPU required.
+- **Demucs HD (htdemucs_ft):** Best quality, GPU required.
+
+**How to use:**
+- By default, the fastest model (Demucs CPU Lite) is used for all separations.
+- To select a different model, enable the "Model selection" toggle in the web interface. This will reveal a dropdown where you can choose your preferred model.
+- If the toggle is not enabled, the model selection UI is hidden and the default model is used.
+
+**Tip:** If you do not have a GPU, select Demucs CPU Lite for best compatibility and speed.
 
 ### File Upload
 1. **Select elements** (vocals, drums, bass, etc.)

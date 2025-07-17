@@ -64,6 +64,21 @@ python main.py
 Acesse: http://localhost:7860
 
 ## 🎯 Como usar a interface
+### Seleção de Modelo de IA
+
+Agora é possível escolher entre diferentes modelos de IA para separação:
+
+- **Demucs CPU Lite (mdx_extra_q):** Mais rápido, funciona em qualquer CPU (padrão).
+- **Demucs v3 (mdx):** Rápido, GPU recomendada para melhor desempenho.
+- **Demucs v4 (htdemucs):** Velocidade média, requer GPU.
+- **Demucs HD (htdemucs_ft):** Melhor qualidade, requer GPU.
+
+**Como funciona:**
+- Por padrão, o modelo mais rápido (Demucs CPU Lite) é usado em todas as separações.
+- Para escolher outro modelo, habilite a opção "Seleção de modelo" na interface web. Isso mostrará um menu para selecionar o modelo desejado.
+- Se a opção não estiver habilitada, a seleção de modelo fica oculta e o modelo padrão é utilizado.
+
+**Dica:** Se você não possui GPU, selecione Demucs CPU Lite para melhor compatibilidade e velocidade.
 
 ### Upload de Arquivo
 1. **Selecione quais elementos extrair** (vocais, bateria, baixo, etc.)
