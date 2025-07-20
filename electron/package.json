@@ -1,0 +1,20 @@
+{
+  "name": "voice-separator-desktop",
+  "version": "1.0.0",
+  "description": "Voice Separator Desktop App (Electron)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "author": "Fernando Paladini",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^30.0.0",
+    "systeminformation": "^5.21.11",
+    "axios": "^1.6.7"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.6.0"
+  }
+}

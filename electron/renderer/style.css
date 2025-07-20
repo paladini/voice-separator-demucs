@@ -1,0 +1,112 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f7f7ff;
+  color: #222;
+  margin: 0;
+}
+.container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(108,99,255,0.08);
+  padding: 32px 32px 24px 32px;
+}
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+header h1 {
+  font-size: 2.2em;
+  color: #6c63ff;
+  margin-bottom: 0.2em;
+}
+.hardware-info {
+  font-size: 1em;
+  color: #555;
+  margin-top: 0.5em;
+}
+.input-section, .model-section, .stems-section, .actions-section {
+  margin-bottom: 24px;
+}
+button {
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 1.5em;
+  font-size: 1.1em;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #4b47b5;
+}
+.custom-select {
+  width: 100%;
+  padding: 0.5em 2em 0.5em 1em;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 1px solid #6c63ff;
+  background: #f7f7ff url('data:image/svg+xml;utf8,<svg fill="%236c63ff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.7em center/1.2em;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: 0 2px 8px rgba(108,99,255,0.08);
+  transition: border-color 0.2s;
+}
+.custom-select:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+  vertical-align: middle;
+}
+.switch input {display:none;}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #6c63ff;
+}
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+.toggle-label {
+  margin-left: 12px;
+  font-size: 1.1em;
+  color: #333;
+  vertical-align: middle;
+}
+.stems-section label {
+  margin-right: 18px;
+  font-size: 1.1em;
+}
+#statusSection {
+  margin-top: 18px;
+  font-size: 1.1em;
+  color: #6c63ff;
+}

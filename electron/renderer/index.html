@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Separator Desktop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎵 Voice Separator <span class="platform"></span></h1>
+      <p>Separate vocals and instrumentals from your music using AI</p>
+      <div id="hardwareInfo" class="hardware-info"></div>
+    </header>
+    <main>
+      <section class="input-section">
+        <button id="openFileBtn">Open Audio File</button>
+        <span id="selectedFile"></span>
+        <button id="openYoutubeBtn">Process YouTube URL</button>
+        <input type="text" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..." style="display:none;">
+      </section>
+      <section class="model-section">
+        <label class="switch">
+          <input type="checkbox" id="enableModelSelection">
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label"><strong>Enable model selection</strong></span>
+        <div id="modelSelectionSection" style="display:none;">
+          <select id="modelSelect" class="custom-select">
+            <option value="mdx_extra_q" selected>⚡ Demucs CPU Lite (Fastest, CPU only)</option>
+            <option value="mdx">🚀 Demucs v3 (Fast, GPU recommended)</option>
+            <option value="htdemucs">🎯 Demucs v4 (Medium, GPU required)</option>
+            <option value="htdemucs_ft">🌟 Demucs HD (Best Quality, GPU required)</option>
+          </select>
+        </div>
+      </section>
+      <section class="stems-section">
+        <h3>🎛️ Select which channels to extract:</h3>
+        <label><input type="checkbox" value="vocals" checked> Vocals</label>
+        <label><input type="checkbox" value="instrumental"> Instrumental</label>
+        <label><input type="checkbox" value="drums"> Drums</label>
+        <label><input type="checkbox" value="bass"> Bass</label>
+        <label><input type="checkbox" value="other"> Other</label>
+      </section>
+      <section class="actions-section">
+        <button id="processBtn">Separate</button>
+        <button id="openOutputBtn">Open Output Folder</button>
+      </section>
+      <section id="statusSection"></section>
+    </main>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>
