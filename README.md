@@ -1,6 +1,6 @@
 # Voice Separator - AI-Powered Audio Separation
 
-A simple and efficient web application to separate audio elements (vocals, drums, bass, other instruments) from music using artificial intelligence.
+A simple and efficient self-hosted web application to separate audio elements (vocals, drums, bass, other instruments) from music using artificial intelligence.
 
 ## 🎵 What it does
 
