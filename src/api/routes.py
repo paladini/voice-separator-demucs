@@ -110,13 +110,6 @@ async def separate_audio(
                     detail=f"Unsupported file format. Use: {', '.join(ALLOWED_EXTENSIONS)}"
                 )
         
-        # Check file size (100MB limit)
-        if hasattr(file, 'size') and file.size > 100 * 1024 * 1024:
-            raise HTTPException(
-                status_code=400,
-                detail="File too large. Maximum limit: 100MB"
-            )
-        
         # Process stems list
         selected_stems = [stem.strip() for stem in stems.split(",") if stem.strip()]
         if not selected_stems:
@@ -338,4 +331,11 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=True)
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=7860,
+        reload=True,
+        timeout_keep_alive=1200,  # 20 minutes
+        timeout_graceful_shutdown=1200,  # 20 minutes
+    )
