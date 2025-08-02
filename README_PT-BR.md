@@ -134,7 +134,7 @@ docker cp voice-separator:/app/static/output ./meus-arquivos/
 - **M4A** - iTunes/Apple
 - **AAC** - Comprimido
 
-**Tamanho máximo:** 100MB por arquivo
+**Tamanho máximo:** Sem limite de tamanho de arquivo (uso local)
 
 ## 🔧 Solução de problemas
 

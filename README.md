@@ -67,6 +67,39 @@ python main.py
 
 Access [http://localhost:7860](http://localhost:7860).
 
+---
+
+## 🔒 Local HTTPS & Browser Security Warnings
+
+By default, the app runs on plain HTTP for simplicity. Modern browsers may show warnings like "Not Secure" or block downloads when using HTTP, even for local apps. This is normal and safe for local use.
+
+**To avoid these warnings:**
+
+1. **Use HTTPS locally with a self-signed certificate:**
+   - Generate a certificate (one-time):
+     ```bash
+     openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
+     ```
+   - Run the app with HTTPS:
+     ```bash
+     uvicorn main:app --host 0.0.0.0 --port 7860 --reload --ssl-keyfile=key.pem --ssl-certfile=cert.pem
+     ```
+   - Access the app at [https://localhost:7860](https://localhost:7860) and accept the browser warning about the self-signed certificate.
+
+2. **You may commit and reuse the same `.pem` files for local development.**
+   - This is safe for local-only use. Never use these files in production.
+   - All users will see a browser warning the first time, unless they add the certificate to their trusted store (not required for local dev).
+
+3. **If you use plain HTTP:**
+   - You may see "Not Secure" warnings and Chrome may block downloads. You can safely click "Keep" or "Download anyway" for your own files.
+
+**Summary:**
+- For local use, these warnings are not a risk.
+- For the best user experience, use HTTPS as above.
+- Always access the app at [http://localhost:7860](http://localhost:7860) or [https://localhost:7860](https://localhost:7860), not `0.0.0.0`.
+
+Access [http://localhost:7860](http://localhost:7860).
+
 ## 🎵 Usage
 ### Model Selection Feature
 
@@ -108,7 +141,7 @@ You can now choose between different AI models for separation:
 ## 📋 Supported formats
 
 ✅ **MP3**, WAV, FLAC, M4A, AAC  
-📏 **Limit:** 100MB per file  
+📏 **Limit:** No file size limit (local use)
 ⏱️ **YouTube:** Maximum 10 minutes
 
 ## 🛠️ Technical details

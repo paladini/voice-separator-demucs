@@ -474,13 +474,6 @@
                     return;
                 }
                 
-                // Check size (100MB)
-                if (file.size > 100 * 1024 * 1024) {
-                    showStatus('File too large. Maximum limit: 100MB', 'error');
-                    separateBtn.disabled = true;
-                    return;
-                }
-                
                 showStatus('Valid file selected. Click "Separate Vocals" to continue.', 'info');
             } else {
                 fileInfo.style.display = 'none';
