@@ -25,7 +25,7 @@
 
 ## API & Data Flow
 - User selects stems and uploads file or YouTube URL via frontend.
-- Frontend JS validates file type/size (max 100MB, MP3/WAV/FLAC/M4A/AAC) and YouTube URL (max 10 min, public).
+- Frontend JS validates file type (MP3/WAV/FLAC/M4A/AAC) and YouTube URL (max 10 min, public). No file size limit for uploads (local use).
 - `/api/separate` (file) and `/api/separate-youtube` (YouTube) endpoints process requests, call separation logic, and return download links for each stem.
 - Results are displayed dynamically; download links use stem icons/names from backend config.
 

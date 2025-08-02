@@ -108,7 +108,7 @@ You can now choose between different AI models for separation:
 ## 📋 Supported formats
 
 ✅ **MP3**, WAV, FLAC, M4A, AAC  
-📏 **Limit:** 100MB per file  
+📏 **Limit:** No file size limit (local use)
 ⏱️ **YouTube:** Maximum 10 minutes
 
 ## 🛠️ Technical details
