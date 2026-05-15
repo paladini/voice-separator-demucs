@@ -104,6 +104,15 @@ class AudioSeparator:
                 # Load the audio
                 audio_file = AudioFile(input_file_path)
                 wav_data = audio_file.read()
+
+                # Demucs models used here expect stereo input.
+                # If input is mono, duplicate the channel to create stereo.
+                if len(wav_data.shape) == 2 and wav_data.shape[0] == 1:
+                    wav_data = wav_data.repeat(2, 1)
+                    logger.info("Mono input detected and converted to stereo for processing.")
+                elif len(wav_data.shape) == 3 and wav_data.shape[1] == 1:
+                    wav_data = wav_data.repeat(1, 2, 1)
+                    logger.info("Mono batch input detected and converted to stereo for processing.")
                 
                 # Apply model for separation
                 logger.info("Starting audio separation...")
