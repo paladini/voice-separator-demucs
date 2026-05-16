@@ -4,9 +4,11 @@ uvicorn[standard]
 python-multipart
 torch
 torchaudio
+torchcodec
 demucs
 diffq
 pydub
+audioop-lts; python_version >= "3.13"
 jinja2
 yt-dlp
 

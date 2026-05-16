@@ -251,6 +251,32 @@ python main.py
 - Interactive docs: `http://localhost:7860/docs`
 - Alternative docs: `http://localhost:7860/redoc`
 
+### Verify mono/stereo behavior (manual)
+After starting the app (`python main.py`), you can create short test files and run both separation paths:
+
+```bash
+# 1) Create 5-second 48 kHz mono and stereo test tones
+ffmpeg -f lavfi -i "sine=frequency=440:sample_rate=48000:duration=5" -ac 1 -ar 48000 ./test-mono.wav -y
+ffmpeg -f lavfi -i "sine=frequency=440:sample_rate=48000:duration=5" -ac 2 -ar 48000 ./test-stereo.wav -y
+
+# 2) Submit mono file
+curl -X POST "http://localhost:7860/api/separate" \
+  -F "file=@./test-mono.wav" \
+  -F "stems=vocals"
+
+# 3) Submit stereo file
+curl -X POST "http://localhost:7860/api/separate" \
+  -F "file=@./test-stereo.wav" \
+  -F "stems=vocals"
+```
+
+Both requests should return `success: true` and generated MP3 paths.
+
+### Run unit tests for channel normalization
+```bash
+python -m unittest tests/test_audio_tensor_utils.py -v
+```
+
 ## 📝 Usage notes
 
 This tool is intended for personal and educational use. Please respect the copyright of the music you process.
