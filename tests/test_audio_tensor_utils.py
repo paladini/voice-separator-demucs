@@ -2,6 +2,11 @@ import importlib.util
 import unittest
 from pathlib import Path
 
+try:
+    import torch
+except ModuleNotFoundError:
+    torch = None
+
 
 MODULE_PATH = (
     Path(__file__).resolve().parents[1] / "src" / "core" / "audio_tensor_utils.py"
@@ -63,6 +68,45 @@ class UpmixMonoToStereoTests(unittest.TestCase):
         self.assertIsNone(layout)
         self.assertIs(converted, wav_data)
         self.assertEqual(wav_data.repeat_calls, [])
+
+    @unittest.skipIf(torch is None, "torch is not installed")
+    def test_upmixes_torch_2d_mono_preserving_dtype_and_device(self):
+        wav_data = torch.ones((1, 48000), dtype=torch.float64)
+
+        converted, layout = upmix_mono_to_stereo(wav_data)
+
+        self.assertEqual(layout, "2d")
+        self.assertEqual(tuple(converted.shape), (2, 48000))
+        self.assertEqual(converted.dtype, wav_data.dtype)
+        self.assertEqual(converted.device, wav_data.device)
+        self.assertTrue(torch.equal(converted[0], wav_data[0]))
+        self.assertTrue(torch.equal(converted[1], wav_data[0]))
+
+    @unittest.skipIf(torch is None, "torch is not installed")
+    def test_upmixes_torch_3d_mono_batch_preserving_dtype_and_device(self):
+        wav_data = torch.ones((1, 1, 48000), dtype=torch.float32)
+
+        converted, layout = upmix_mono_to_stereo(wav_data)
+
+        self.assertEqual(layout, "3d")
+        self.assertEqual(tuple(converted.shape), (1, 2, 48000))
+        self.assertEqual(converted.dtype, wav_data.dtype)
+        self.assertEqual(converted.device, wav_data.device)
+        self.assertTrue(torch.equal(converted[:, 0], wav_data[:, 0]))
+        self.assertTrue(torch.equal(converted[:, 1], wav_data[:, 0]))
+
+    @unittest.skipIf(torch is None, "torch is not installed")
+    def test_keeps_torch_stereo_tensors_unchanged(self):
+        stereo_2d = torch.zeros((2, 48000), dtype=torch.float32)
+        stereo_3d = torch.zeros((1, 2, 48000), dtype=torch.float32)
+
+        converted_2d, layout_2d = upmix_mono_to_stereo(stereo_2d)
+        converted_3d, layout_3d = upmix_mono_to_stereo(stereo_3d)
+
+        self.assertIsNone(layout_2d)
+        self.assertIs(converted_2d, stereo_2d)
+        self.assertIsNone(layout_3d)
+        self.assertIs(converted_3d, stereo_3d)
 
 
 if __name__ == "__main__":
