@@ -11,6 +11,7 @@ from demucs.audio import AudioFile
 import torch
 from pydub import AudioSegment
 import torchaudio
+from .audio_tensor_utils import upmix_mono_to_stereo
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -105,13 +106,10 @@ class AudioSeparator:
                 audio_file = AudioFile(input_file_path)
                 wav_data = audio_file.read()
 
-                # Demucs models used here expect stereo input.
-                # If input is mono, duplicate the channel to create stereo.
-                if len(wav_data.shape) == 2 and wav_data.shape[0] == 1:
-                    wav_data = wav_data.repeat(2, 1)
+                wav_data, normalized_layout = upmix_mono_to_stereo(wav_data)
+                if normalized_layout == "2d":
                     logger.info("Mono input detected and converted to stereo for processing.")
-                elif len(wav_data.shape) == 3 and wav_data.shape[1] == 1:
-                    wav_data = wav_data.repeat(1, 2, 1)
+                elif normalized_layout == "3d":
                     logger.info("Mono batch input detected and converted to stereo for processing.")
                 
                 # Apply model for separation
