@@ -256,17 +256,17 @@ After starting the app (`python main.py`), you can create short test files and r
 
 ```bash
 # 1) Create 5-second mono and stereo test tones
-ffmpeg -f lavfi -i "sine=frequency=440:duration=5" -ac 1 /tmp/test-mono.wav -y
-ffmpeg -f lavfi -i "sine=frequency=440:duration=5" -ac 2 /tmp/test-stereo.wav -y
+ffmpeg -f lavfi -i "sine=frequency=440:duration=5" -ac 1 ./test-mono.wav -y
+ffmpeg -f lavfi -i "sine=frequency=440:duration=5" -ac 2 ./test-stereo.wav -y
 
 # 2) Submit mono file
 curl -X POST "http://localhost:7860/api/separate" \
-  -F "file=@/tmp/test-mono.wav" \
+  -F "file=@./test-mono.wav" \
   -F "selected_stems=vocals"
 
 # 3) Submit stereo file
 curl -X POST "http://localhost:7860/api/separate" \
-  -F "file=@/tmp/test-stereo.wav" \
+  -F "file=@./test-stereo.wav" \
   -F "selected_stems=vocals"
 ```
 
