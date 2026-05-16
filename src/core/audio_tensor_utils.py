@@ -5,6 +5,10 @@ def upmix_mono_to_stereo(wav_data: Any) -> Tuple[Any, Optional[str]]:
     """
     Upmix mono tensors to stereo for supported Demucs input layouts.
 
+    Args:
+        wav_data: Tensor-like object (typically torch.Tensor) exposing `shape`
+            and `repeat(*dims)`.
+
     Returns:
         (possibly_updated_tensor, layout_tag)
         layout_tag is:
