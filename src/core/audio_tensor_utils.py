@@ -18,7 +18,7 @@ def upmix_mono_to_stereo(wav_data: Any) -> Tuple[Any, Optional[str]]:
     """
     shape = getattr(wav_data, "shape", None)
     if shape is None:
-        return wav_data, None
+        raise TypeError("wav_data must expose a shape attribute")
 
     if len(shape) == 2 and shape[0] == 1:
         return wav_data.repeat(2, 1), "2d"

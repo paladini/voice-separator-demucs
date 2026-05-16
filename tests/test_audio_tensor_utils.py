@@ -24,6 +24,10 @@ class TensorSpy:
 
 
 class UpmixMonoToStereoTests(unittest.TestCase):
+    def test_raises_for_invalid_input_without_shape(self):
+        with self.assertRaises(TypeError):
+            upmix_mono_to_stereo(object())
+
     def test_upmixes_2d_mono(self):
         wav_data = TensorSpy((1, 48000))
 
