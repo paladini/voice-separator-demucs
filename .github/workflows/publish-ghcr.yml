@@ -1,0 +1,156 @@
+# Publish voice-separator to GitHub Container Registry (GHCR).
+# Prefer mirror from Docker Hub (avoids heavy Demucs rebuild on runners).
+# Docker Hub publish is unchanged — this only pushes to ghcr.io.
+#
+# Image: ghcr.io/paladini/voice-separator (matches Hub: paladini/voice-separator)
+#
+# Visibility: after the first successful push, make the package public if needed:
+#   GitHub → Packages → voice-separator → Package settings → Change visibility → Public
+#   (API may require packages scopes not available on GITHUB_TOKEN alone.)
+
+name: Publish to GHCR
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "mirror = pull Hub + retag + push GHCR (recommended); build = rebuild from Dockerfile"
+        type: choice
+        required: true
+        default: mirror
+        options:
+          - mirror
+          - build
+      source_tag:
+        description: "Docker Hub / GHCR tag to use (mirror source tag, or build output tag)"
+        required: true
+        default: latest
+      also_tag_sha:
+        description: "Also tag with short git SHA"
+        type: boolean
+        required: false
+        default: true
+
+env:
+  REGISTRY: ghcr.io
+  # Match Docker Hub name for clarity
+  IMAGE_NAME: paladini/voice-separator
+  HUB_IMAGE: docker.io/paladini/voice-separator
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Large image: mirror is usually minutes; build can take much longer
+    timeout-minutes: 360
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        if: inputs.mode == 'build'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute tags
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ inputs.source_tag }}"
+          GHCR_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          TAGS="${GHCR_IMAGE}:${TAG}"
+          if [[ "${{ inputs.also_tag_sha }}" == "true" ]]; then
+            SHORT_SHA="$(echo "${{ github.sha }}" | cut -c1-7)"
+            TAGS+=$'\n'"${GHCR_IMAGE}:${SHORT_SHA}"
+          fi
+          if [[ "${TAG}" != "latest" ]]; then
+            # keep explicit tag; caller decides whether to also promote latest
+            :
+          fi
+          {
+            echo "ghcr_image=${GHCR_IMAGE}"
+            echo "primary_tag=${TAG}"
+            echo "tags<<EOF"
+            echo "${TAGS}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "Will publish tags:"
+          echo "${TAGS}"
+
+      - name: Mirror Hub → GHCR
+        if: inputs.mode == 'mirror'
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="${{ env.HUB_IMAGE }}:${{ inputs.source_tag }}"
+          GHCR_IMAGE="${{ steps.meta.outputs.ghcr_image }}"
+          PRIMARY="${GHCR_IMAGE}:${{ steps.meta.outputs.primary_tag }}"
+
+          echo "Pulling ${SRC} ..."
+          docker pull "${SRC}"
+
+          echo "Retagging → ${PRIMARY}"
+          docker tag "${SRC}" "${PRIMARY}"
+
+          if [[ "${{ inputs.also_tag_sha }}" == "true" ]]; then
+            SHORT_SHA="$(echo "${{ github.sha }}" | cut -c1-7)"
+            docker tag "${SRC}" "${GHCR_IMAGE}:${SHORT_SHA}"
+          fi
+
+          echo "Pushing to GHCR ..."
+          docker push "${PRIMARY}"
+          if [[ "${{ inputs.also_tag_sha }}" == "true" ]]; then
+            docker push "${GHCR_IMAGE}:${SHORT_SHA}"
+          fi
+
+          echo "Digest:"
+          docker inspect --format='{{index .RepoDigests 0}}' "${PRIMARY}" || true
+
+      - name: Build and push from Dockerfile
+        if: inputs.mode == 'build'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          # No Hub login — Hub publish remains independent / manual
+          provenance: false
+          sbom: false
+
+      - name: Summary
+        shell: bash
+        run: |
+          {
+            echo "## GHCR publish"
+            echo ""
+            echo "- **Mode:** \`${{ inputs.mode }}\`"
+            echo "- **Image:** \`${{ steps.meta.outputs.ghcr_image }}:${{ steps.meta.outputs.primary_tag }}\`"
+            echo "- **Package URL:** https://github.com/users/paladini/packages/container/package/voice-separator"
+            echo ""
+            echo "### Make package public (UI)"
+            echo "If the package is private after first push:"
+            echo "1. Open the package URL above"
+            echo "2. **Package settings** → **Change visibility** → **Public**"
+          } >> "$GITHUB_STEP_SUMMARY"
