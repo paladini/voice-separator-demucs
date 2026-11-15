@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>voice-separator-gpu</Name>
+  <Repository>paladini/voice-separator:gpu</Repository>
+  <Registry>https://hub.docker.com/r/paladini/voice-separator</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/paladini/voice-separator-demucs/issues</Support>
+  <Project>https://github.com/paladini/voice-separator-demucs</Project>
+  <Overview>NVIDIA GPU build of Voice Separator (CUDA PyTorch + Demucs). Requires NVIDIA driver and NVIDIA Container Toolkit on Unraid.</Overview>
+  <Category>MediaApp:Music:Status:Stable</Category>
+  <WebUI>http://[IP]:[PORT:7860]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/paladini/voice-separator-demucs/main/deploy/unraid/voice-separator-gpu.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/paladini/voice-separator-demucs/main/static/voice-separator-logo.png</Icon>
+  <ExtraParams>--gpus all</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>NVIDIA driver + nvidia-container-toolkit. Do not use paladini/voice-separator:latest with --gpus; that image is CPU PyTorch.</Requires>
+  <Description>
+    Voice Separator GPU image (tag gpu). CUDA 12.6 PyTorch. Web UI on port 7860. Do not run alongside the CPU container on the same host port.
+  </Description>
+  <Networking>
+    <Mode>bridge</Mode>
+    <Publish>
+      <Port>
+        <HostPort>7860</HostPort>
+        <ContainerPort>7860</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+    </Publish>
+  </Networking>
+  <Data>
+    <Volume>
+      <HostDir>/mnt/user/appdata/voice-separator/output</HostDir>
+      <ContainerDir>/app/static/output</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/appdata/voice-separator/cache</HostDir>
+      <ContainerDir>/root/.cache</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+  </Data>
+  <Environment>
+    <Variable>
+      <Value>1</Value>
+      <Name>PYTHONUNBUFFERED</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>/root/.cache/torch</Value>
+      <Name>TORCH_HOME</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>all</Value>
+      <Name>NVIDIA_VISIBLE_DEVICES</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>compute,utility</Value>
+      <Name>NVIDIA_DRIVER_CAPABILITIES</Name>
+      <Mode/>
+    </Variable>
+  </Environment>
+  <Config Name="WebUI Port" Target="7860" Default="7860" Mode="tcp" Description="Web UI" Type="Port" Display="always" Required="true" Mask="false">7860</Config>
+  <Config Name="Separated files" Target="/app/static/output" Default="/mnt/user/appdata/voice-separator/output" Mode="rw" Description="Output MP3s" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/voice-separator/output</Config>
+  <Config Name="Model cache" Target="/root/.cache" Default="/mnt/user/appdata/voice-separator/cache" Mode="rw" Description="Demucs / torch hub cache" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/voice-separator/cache</Config>
+  <Config Name="PYTHONUNBUFFERED" Target="PYTHONUNBUFFERED" Default="1" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">1</Config>
+  <Config Name="TORCH_HOME" Target="TORCH_HOME" Default="/root/.cache/torch" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">/root/.cache/torch</Config>
+  <Config Name="NVIDIA_VISIBLE_DEVICES" Target="NVIDIA_VISIBLE_DEVICES" Default="all" Mode="" Description="GPU devices" Type="Variable" Display="advanced" Required="false" Mask="false">all</Config>
+  <Config Name="NVIDIA_DRIVER_CAPABILITIES" Target="NVIDIA_DRIVER_CAPABILITIES" Default="compute,utility" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">compute,utility</Config>
+</Container>

@@ -1,0 +1,15 @@
+# TrueNAS SCALE NVIDIA overlay. Use with docker-compose.yml:
+#   IMAGE_TAG=gpu docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+#
+# Host must expose NVIDIA devices to Docker. The gpu image is
+# paladini/voice-separator:gpu (CUDA 12.6 PyTorch).
+
+services:
+  voice-separator:
+    image: paladini/voice-separator:gpu
+    gpus: all
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TORCH_HOME=/root/.cache/torch
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility

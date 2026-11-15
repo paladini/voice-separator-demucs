@@ -1,0 +1,16 @@
+# Copy to awesome-selfhosted/awesome-selfhosted-data as software/voice-separator.yml
+# Do not send this file from an LLM account — their CONTRIBUTING forbids
+# machine-generated PRs. Open the PR from a human GitHub account (see SUBMISSION.md).
+
+name: Voice Separator
+website_url: https://github.com/paladini/voice-separator-demucs
+source_code_url: https://github.com/paladini/voice-separator-demucs
+description: Web UI for Demucs music source separation. Split vocals, drums, bass, and other stems from uploads or YouTube URLs.
+licenses:
+  - MIT
+platforms:
+  - Python
+  - Docker
+tags:
+  - Media Streaming - Multimedia Streaming
+  - Media Management

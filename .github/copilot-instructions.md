@@ -18,8 +18,9 @@
   - `python main.py` (or `uvicorn main:app --host 0.0.0.0 --port 7860 --reload`)
   - Access UI at [http://localhost:7860](http://localhost:7860)
 - **Docker:**
-  - `docker compose up -d` (recommended; files in `static/output/`)
-  - For container-only: `docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator`
+  - `docker compose up -d` (CPU; files in `static/output/`)
+  - For container-only CPU: `docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator`
+  - Optional NVIDIA: `Dockerfile.gpu` / tag `gpu` / `docker compose --profile gpu up -d voice-separator-gpu` (requires NVIDIA Container Toolkit; do not pass `--gpus` to the CPU image)
 - **Install dependencies:** `pip install -r requirements.txt`
 - **FFmpeg required:** Must be installed on host (see README for install commands).
 

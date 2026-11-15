@@ -1,6 +1,13 @@
 # Voice Separator - Separação de Vocais com IA
 
+[![License: MIT](https://img.shields.io/github/license/paladini/voice-separator-demucs)](LICENSE)
+[![Docker Pulls](https://img.shields.io/docker/pulls/paladini/voice-separator)](https://hub.docker.com/r/paladini/voice-separator)
+[![GHCR](https://img.shields.io/badge/ghcr.io-paladini%2Fvoice--separator-blue)](https://github.com/paladini/voice-separator-demucs/pkgs/container/voice-separator)
+[![GitHub stars](https://img.shields.io/github/stars/paladini/voice-separator-demucs)](https://github.com/paladini/voice-separator-demucs/stargazers)
+
 Uma aplicação web simples e eficiente para separar elementos de áudio (vocais, bateria, baixo, outros instrumentos) de músicas usando inteligência artificial.
+
+**Imagens:** Docker Hub / GHCR `paladini/voice-separator` (`latest` = CPU, `gpu` = NVIDIA). Templates Unraid / TrueNAS: [`deploy/`](deploy/). Rascunho para awesome-selfhosted: [`docs/awesome-selfhosted/`](docs/awesome-selfhosted/).
 
 ## 🎵 O que faz
 
@@ -17,7 +24,7 @@ Uma aplicação web simples e eficiente para separar elementos de áudio (vocais
 **Super simples - apenas um comando:**
 
 ```bash
-# Método mais simples (arquivos salvos dentro do container)
+# Método mais simples CPU (arquivos salvos dentro do container)
 docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator
 
 # Método recomendado (arquivos acessíveis no seu computador)
@@ -26,9 +33,20 @@ cd voice-separator-demucs
 docker compose up -d
 ```
 
+GPU NVIDIA (imagem CUDA, **não** use a tag `latest`):
+
+```bash
+docker run --gpus all -d -p 7860:7860 --name voice-separator paladini/voice-separator:gpu
+# ou, neste repositório:
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+# ou: docker compose --profile gpu up -d voice-separator-gpu
+```
+
 Acesse: http://localhost:7860
 
 **Pronto!** Se usar o segundo método, seus arquivos aparecerão na pasta `output/`.
+
+A imagem padrão (`latest`) é **somente CPU**. `--gpus` nela não ativa CUDA. A tag `gpu` usa PyTorch CUDA 12.6 e exige o NVIDIA Container Toolkit. Templates: [`deploy/unraid/`](deploy/unraid/) e [`deploy/truenas/`](deploy/truenas/).
 
 ### Opção 2: Instalação Manual
 

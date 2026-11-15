@@ -1,6 +1,13 @@
 # Voice Separator - AI-Powered Audio Separation
 
+[![License: MIT](https://img.shields.io/github/license/paladini/voice-separator-demucs)](LICENSE)
+[![Docker Pulls](https://img.shields.io/docker/pulls/paladini/voice-separator)](https://hub.docker.com/r/paladini/voice-separator)
+[![GHCR](https://img.shields.io/badge/ghcr.io-paladini%2Fvoice--separator-blue)](https://github.com/paladini/voice-separator-demucs/pkgs/container/voice-separator)
+[![GitHub stars](https://img.shields.io/github/stars/paladini/voice-separator-demucs)](https://github.com/paladini/voice-separator-demucs/stargazers)
+
 A simple and efficient self-hosted web application to separate audio elements (vocals, drums, bass, other instruments) from music using artificial intelligence.
+
+**Images:** Docker Hub / GHCR `paladini/voice-separator` (`latest` = CPU, `gpu` = NVIDIA). Unraid / TrueNAS templates: [`deploy/`](deploy/). Listing draft: [`docs/awesome-selfhosted/`](docs/awesome-selfhosted/).
 
 ## 🎵 What it does
 
@@ -19,13 +26,22 @@ A simple and efficient self-hosted web application to separate audio elements (v
 **Super simple - Just one command:**
 
 ```bash
-# Method 1: Ultra-simple (files saved inside container)
+# Method 1: Ultra-simple CPU (files saved inside container)
 docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator
 
 # Method 2: Using docker-compose (files accessible on your computer)
 git clone https://github.com/paladini/voice-separator-demucs.git
 cd voice-separator-demucs
 docker compose up -d
+```
+
+NVIDIA GPU (CUDA PyTorch image, **not** the default `latest` tag):
+
+```bash
+docker run --gpus all -d -p 7860:7860 --name voice-separator paladini/voice-separator:gpu
+# or, from this repo:
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+# or: docker compose --profile gpu up -d voice-separator-gpu
 ```
 
 Access [http://localhost:7860](http://localhost:7860).
@@ -187,6 +203,30 @@ docker compose up -d
 # Files saved to: ./static/output/
 ```
 
+**Option C: NVIDIA GPU (optional)**
+
+The default `paladini/voice-separator` / `latest` image is **CPU-only** (PyPI PyTorch). Passing `--gpus` to it will not enable CUDA. Use tag **`gpu`**, which installs CUDA 12.6 PyTorch on `nvidia/cuda` and needs the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html):
+
+```bash
+docker run --gpus all -d -p 7860:7860 \
+  -v $(pwd)/voice-separator-output:/app/static/output \
+  --name voice-separator \
+  paladini/voice-separator:gpu
+
+# Compose overlay (same service name, GPU image + gpus: all)
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+
+# Compose profile (starts voice-separator-gpu only — stop the CPU container first)
+docker compose --profile gpu up -d voice-separator-gpu
+```
+
+GHCR mirrors Hub tags: `ghcr.io/paladini/voice-separator:latest` (CPU) and `:gpu` (NVIDIA). Hub copy-paste text: [`docs/docker-hub-overview.md`](docs/docker-hub-overview.md).
+
+### NAS / homelab templates
+
+- Unraid Community Apps–style XML: [`deploy/unraid/voice-separator.xml`](deploy/unraid/voice-separator.xml) (CPU) and [`voice-separator-gpu.xml`](deploy/unraid/voice-separator-gpu.xml)
+- TrueNAS SCALE compose: [`deploy/truenas/docker-compose.yml`](deploy/truenas/docker-compose.yml)
+
 ### Management commands
 ```bash
 # Stop container
@@ -200,6 +240,8 @@ docker rm voice-separator
 
 # Update to latest version
 docker pull paladini/voice-separator:latest
+# GPU image
+docker pull paladini/voice-separator:gpu
 ```
 
 ## 🆘 Troubleshooting

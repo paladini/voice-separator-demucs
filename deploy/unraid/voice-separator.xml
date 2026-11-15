@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>voice-separator</Name>
+  <Repository>paladini/voice-separator:latest</Repository>
+  <Registry>https://hub.docker.com/r/paladini/voice-separator</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/paladini/voice-separator-demucs/issues</Support>
+  <Project>https://github.com/paladini/voice-separator-demucs</Project>
+  <Overview>Self-hosted web UI that separates vocals, drums, bass, and other stems from audio using Meta Demucs. CPU image (default Hub tag).</Overview>
+  <Category>MediaApp:Music:Status:Stable</Category>
+  <WebUI>http://[IP]:[PORT:7860]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/paladini/voice-separator-demucs/main/deploy/unraid/voice-separator.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/paladini/voice-separator-demucs/main/static/voice-separator-logo.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Description>
+    Voice Separator (CPU). Web UI on port 7860. First run downloads Demucs model weights into the cache volume. For NVIDIA GPU, use the voice-separator-gpu template instead of adding --gpus to this CPU image (CPU PyTorch cannot use CUDA).
+  </Description>
+  <Networking>
+    <Mode>bridge</Mode>
+    <Publish>
+      <Port>
+        <HostPort>7860</HostPort>
+        <ContainerPort>7860</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+    </Publish>
+  </Networking>
+  <Data>
+    <Volume>
+      <HostDir>/mnt/user/appdata/voice-separator/output</HostDir>
+      <ContainerDir>/app/static/output</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/appdata/voice-separator/cache</HostDir>
+      <ContainerDir>/root/.cache</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+  </Data>
+  <Environment>
+    <Variable>
+      <Value>1</Value>
+      <Name>PYTHONUNBUFFERED</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>/root/.cache/torch</Value>
+      <Name>TORCH_HOME</Name>
+      <Mode/>
+    </Variable>
+  </Environment>
+  <Config Name="WebUI Port" Target="7860" Default="7860" Mode="tcp" Description="Web UI" Type="Port" Display="always" Required="true" Mask="false">7860</Config>
+  <Config Name="Separated files" Target="/app/static/output" Default="/mnt/user/appdata/voice-separator/output" Mode="rw" Description="Output MP3s" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/voice-separator/output</Config>
+  <Config Name="Model cache" Target="/root/.cache" Default="/mnt/user/appdata/voice-separator/cache" Mode="rw" Description="Demucs / torch hub cache" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/voice-separator/cache</Config>
+  <Config Name="PYTHONUNBUFFERED" Target="PYTHONUNBUFFERED" Default="1" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">1</Config>
+  <Config Name="TORCH_HOME" Target="TORCH_HOME" Default="/root/.cache/torch" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">/root/.cache/torch</Config>
+</Container>

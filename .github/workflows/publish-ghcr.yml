@@ -3,6 +3,7 @@
 # Docker Hub publish is unchanged — this only pushes to ghcr.io.
 #
 # Image: ghcr.io/paladini/voice-separator (matches Hub: paladini/voice-separator)
+# Tags:  latest = CPU (existing contract); gpu = NVIDIA CUDA image (Dockerfile.gpu)
 #
 # Visibility: after the first successful push, make the package public if needed:
 #   GitHub → Packages → voice-separator → Package settings → Change visibility → Public
@@ -21,8 +22,16 @@ on:
         options:
           - mirror
           - build
+      variant:
+        description: "cpu = Dockerfile / Hub latest; gpu = Dockerfile.gpu / Hub gpu. GPU must not be published as :latest."
+        type: choice
+        required: true
+        default: cpu
+        options:
+          - cpu
+          - gpu
       source_tag:
-        description: "Docker Hub / GHCR tag to use (mirror source tag, or build output tag)"
+        description: "Docker Hub / GHCR tag to use (mirror source tag, or build output tag). Use latest for CPU, gpu for GPU."
         required: true
         default: latest
       also_tag_sha:
@@ -78,25 +87,40 @@ jobs:
         run: |
           set -euo pipefail
           TAG="${{ inputs.source_tag }}"
+          VARIANT="${{ inputs.variant }}"
           GHCR_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          DOCKERFILE="./Dockerfile"
+
+          if [[ "${VARIANT}" == "gpu" ]]; then
+            DOCKERFILE="./Dockerfile.gpu"
+            if [[ "${TAG}" == "latest" ]]; then
+              echo "Refusing to publish the GPU image as :latest (CPU contract: docker run paladini/voice-separator)."
+              echo "Use source_tag=gpu (or another non-latest tag) with variant=gpu."
+              exit 1
+            fi
+          fi
+
           TAGS="${GHCR_IMAGE}:${TAG}"
           if [[ "${{ inputs.also_tag_sha }}" == "true" ]]; then
             SHORT_SHA="$(echo "${{ github.sha }}" | cut -c1-7)"
-            TAGS+=$'\n'"${GHCR_IMAGE}:${SHORT_SHA}"
-          fi
-          if [[ "${TAG}" != "latest" ]]; then
-            # keep explicit tag; caller decides whether to also promote latest
-            :
+            if [[ "${VARIANT}" == "gpu" ]]; then
+              TAGS+=$'\n'"${GHCR_IMAGE}:${SHORT_SHA}-gpu"
+            else
+              TAGS+=$'\n'"${GHCR_IMAGE}:${SHORT_SHA}"
+            fi
           fi
           {
             echo "ghcr_image=${GHCR_IMAGE}"
             echo "primary_tag=${TAG}"
+            echo "dockerfile=${DOCKERFILE}"
+            echo "variant=${VARIANT}"
             echo "tags<<EOF"
             echo "${TAGS}"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
           echo "Will publish tags:"
           echo "${TAGS}"
+          echo "Dockerfile: ${DOCKERFILE}"
 
       - name: Mirror Hub → GHCR
         if: inputs.mode == 'mirror'
@@ -115,13 +139,22 @@ jobs:
 
           if [[ "${{ inputs.also_tag_sha }}" == "true" ]]; then
             SHORT_SHA="$(echo "${{ github.sha }}" | cut -c1-7)"
-            docker tag "${SRC}" "${GHCR_IMAGE}:${SHORT_SHA}"
+            if [[ "${{ inputs.variant }}" == "gpu" ]]; then
+              docker tag "${SRC}" "${GHCR_IMAGE}:${SHORT_SHA}-gpu"
+            else
+              docker tag "${SRC}" "${GHCR_IMAGE}:${SHORT_SHA}"
+            fi
           fi
 
           echo "Pushing to GHCR ..."
           docker push "${PRIMARY}"
           if [[ "${{ inputs.also_tag_sha }}" == "true" ]]; then
-            docker push "${GHCR_IMAGE}:${SHORT_SHA}"
+            SHORT_SHA="$(echo "${{ github.sha }}" | cut -c1-7)"
+            if [[ "${{ inputs.variant }}" == "gpu" ]]; then
+              docker push "${GHCR_IMAGE}:${SHORT_SHA}-gpu"
+            else
+              docker push "${GHCR_IMAGE}:${SHORT_SHA}"
+            fi
           fi
 
           echo "Digest:"
@@ -132,7 +165,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
+          file: ${{ steps.meta.outputs.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           # No Hub login — Hub publish remains independent / manual
@@ -146,6 +179,8 @@ jobs:
             echo "## GHCR publish"
             echo ""
             echo "- **Mode:** \`${{ inputs.mode }}\`"
+            echo "- **Variant:** \`${{ steps.meta.outputs.variant }}\`"
+            echo "- **Dockerfile:** \`${{ steps.meta.outputs.dockerfile }}\`"
             echo "- **Image:** \`${{ steps.meta.outputs.ghcr_image }}:${{ steps.meta.outputs.primary_tag }}\`"
             echo "- **Package URL:** https://github.com/users/paladini/packages/container/package/voice-separator"
             echo ""

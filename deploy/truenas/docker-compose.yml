@@ -1,0 +1,20 @@
+# TrueNAS SCALE custom app / Compose.
+# CPU default (same contract as docker run -p 7860 paladini/voice-separator).
+#
+# GPU: set IMAGE_TAG=gpu and enable NVIDIA runtime in the TrueNAS app
+# (NVIDIA driver + nvidia-container-toolkit). Do not add a GPU runtime
+# to the CPU image — that image does not ship CUDA PyTorch.
+
+services:
+  voice-separator:
+    image: paladini/voice-separator:${IMAGE_TAG:-latest}
+    container_name: voice-separator
+    ports:
+      - "7860:7860"
+    volumes:
+      - /mnt/tank/apps/voice-separator/output:/app/static/output
+      - /mnt/tank/apps/voice-separator/cache:/root/.cache
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TORCH_HOME=/root/.cache/torch
+    restart: unless-stopped
