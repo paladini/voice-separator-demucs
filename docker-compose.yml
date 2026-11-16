@@ -4,11 +4,16 @@
 # CPU (default, unchanged):
 #   docker compose up -d
 #
-# NVIDIA GPU (CUDA image + nvidia runtime):
-#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
-#   docker compose --profile gpu up -d voice-separator-gpu
+# NVIDIA GPU (intended path = overlay; builds Dockerfile.gpu locally).
+# Hub has no :gpu tag until the maintainer pushes it. GHCR :gpu exists only
+# after the publish workflow (variant=gpu).
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
 #
-# Do not run the default CPU service and the gpu profile on :7860 together.
+# Do NOT use: docker compose --profile gpu up -d
+# The CPU service has no profile, so that command can start BOTH CPU and GPU
+# on port 7860. Overlay is the intended GPU path. Profile form (GPU only):
+#   docker compose --profile gpu up -d voice-separator-gpu
+# (stop the CPU container first.)
 
 services:
   voice-separator:

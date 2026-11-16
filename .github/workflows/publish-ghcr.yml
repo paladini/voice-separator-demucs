@@ -2,8 +2,10 @@
 # Prefer mirror from Docker Hub (avoids heavy Demucs rebuild on runners).
 # Docker Hub publish is unchanged — this only pushes to ghcr.io.
 #
-# Image: ghcr.io/paladini/voice-separator (matches Hub: paladini/voice-separator)
-# Tags:  latest = CPU (existing contract); gpu = NVIDIA CUDA image (Dockerfile.gpu)
+# Image: ghcr.io/paladini/voice-separator (CPU name matches Hub paladini/voice-separator)
+# Tags:  latest = CPU (existing Hub contract); gpu = NVIDIA CUDA image (Dockerfile.gpu)
+# Hub has no :gpu tag until the maintainer pushes it. For GPU, use mode=build
+# (Dockerfile.gpu) until Hub :gpu exists to mirror.
 #
 # Visibility: after the first successful push, make the package public if needed:
 #   GitHub → Packages → voice-separator → Package settings → Change visibility → Public

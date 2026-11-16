@@ -1,14 +1,17 @@
-# NVIDIA GPU overlay — use *with* docker-compose.yml, do not start both
-# the default CPU service and the GPU profile on port 7860 at once.
+# NVIDIA GPU overlay — intended GPU path. Use *with* docker-compose.yml.
+# Replaces the CPU service in place (one container on 7860).
 #
-# Recommended (replaces the CPU service image/runtime in place):
-#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
 #
-# Equivalent profile form (starts only the gpu service):
+# Hub does not publish :gpu yet; this builds Dockerfile.gpu locally (or uses a
+# tag you already built). After GHCR workflow / Hub push, you can retag/pull.
+#
+# Do NOT use: docker compose --profile gpu up -d
+# That can start BOTH the default CPU service and voice-separator-gpu on 7860.
+# Profile form only if you name the GPU service and stop CPU first:
 #   docker compose --profile gpu up -d voice-separator-gpu
 #
 # Host requirements: NVIDIA driver + NVIDIA Container Toolkit.
-# Image: paladini/voice-separator:gpu  (not :latest)
 
 services:
   voice-separator:

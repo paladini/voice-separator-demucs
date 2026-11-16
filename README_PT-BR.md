@@ -7,7 +7,7 @@
 
 Uma aplicação web simples e eficiente para separar elementos de áudio (vocais, bateria, baixo, outros instrumentos) de músicas usando inteligência artificial.
 
-**Imagens:** Docker Hub / GHCR `paladini/voice-separator` (`latest` = CPU, `gpu` = NVIDIA). Templates Unraid / TrueNAS: [`deploy/`](deploy/). Rascunho para awesome-selfhosted: [`docs/awesome-selfhosted/`](docs/awesome-selfhosted/).
+**Imagens:** Docker Hub `paladini/voice-separator` (CPU `latest` — padrão publicado). A tag NVIDIA `gpu` **ainda não** está no Hub; construa localmente, publique com o workflow GHCR, ou use Hub `:gpu` só depois que o maintainer enviar essa tag. Templates Unraid / TrueNAS: [`deploy/`](deploy/). Rascunho para awesome-selfhosted: [`docs/awesome-selfhosted/`](docs/awesome-selfhosted/).
 
 ## 🎵 O que faz
 
@@ -33,20 +33,23 @@ cd voice-separator-demucs
 docker compose up -d
 ```
 
-GPU NVIDIA (imagem CUDA, **não** use a tag `latest`):
+GPU NVIDIA é opcional e **não** é o padrão do Hub. `docker run paladini/voice-separator:gpu` falha até essa tag existir no Docker Hub. Neste repositório (driver NVIDIA + [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)):
 
 ```bash
+# Caminho GPU pretendido: overlay (substitui o serviço CPU; um container na 7860)
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+
+# Tag local (após o build acima, ou: docker build -f Dockerfile.gpu -t paladini/voice-separator:gpu .)
 docker run --gpus all -d -p 7860:7860 --name voice-separator paladini/voice-separator:gpu
-# ou, neste repositório:
-docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
-# ou: docker compose --profile gpu up -d voice-separator-gpu
 ```
+
+Não use `docker compose --profile gpu up -d` sem nome de serviço: o serviço CPU não tem profile, então o Compose pode subir **CPU e GPU** na porta **7860**. Depois do workflow GHCR (`variant=gpu`), use `ghcr.io/paladini/voice-separator:gpu`. Depois que o maintainer enviar `:gpu` ao Hub, a mesma tag funciona no Docker Hub.
 
 Acesse: http://localhost:7860
 
 **Pronto!** Se usar o segundo método, seus arquivos aparecerão na pasta `output/`.
 
-A imagem padrão (`latest`) é **somente CPU**. `--gpus` nela não ativa CUDA. A tag `gpu` usa PyTorch CUDA 12.6 e exige o NVIDIA Container Toolkit. Templates: [`deploy/unraid/`](deploy/unraid/) e [`deploy/truenas/`](deploy/truenas/).
+A imagem padrão (`latest`) é **somente CPU**. `--gpus` nela não ativa CUDA. A GPU usa `Dockerfile.gpu` (PyTorch CUDA 12.6) e exige o NVIDIA Container Toolkit. Templates: [`deploy/unraid/`](deploy/unraid/) e [`deploy/truenas/`](deploy/truenas/).
 
 ### Opção 2: Instalação Manual
 
