@@ -1,0 +1,69 @@
+# Optional NVIDIA GPU image. Does not replace the CPU Dockerfile.
+# Hub has no :gpu tag until the maintainer pushes it. Build locally:
+#   docker build -f Dockerfile.gpu -t paladini/voice-separator:gpu .
+#   docker run --gpus all -p 7860:7860 paladini/voice-separator:gpu
+# GHCR :gpu exists only after the publish workflow (variant=gpu).
+# Requires NVIDIA driver + NVIDIA Container Toolkit on the host.
+#
+# CUDA 12.6 wheels keep broader GPU arch coverage than 12.8+/12.9.
+# This image is not useful without a working NVIDIA GPU.
+
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-venv \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/build
+COPY requirements.txt .
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+# Install CUDA PyTorch first, then the rest of the app deps. Reinstall torch
+# at the end so a transitive CPU wheel cannot replace the CUDA build.
+RUN pip install --no-cache-dir --upgrade pip wheel && \
+    pip install --no-cache-dir torch torchaudio --index-url https://download.pytorch.org/whl/cu126 && \
+    grep -vE '^(torch|torchaudio)([=<>~!].*)?$' requirements.txt > /tmp/requirements-nogpu.txt && \
+    pip install --no-cache-dir -r /tmp/requirements-nogpu.txt && \
+    pip install --no-cache-dir --force-reinstall torch torchaudio --index-url https://download.pytorch.org/whl/cu126
+
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility \
+    TORCH_HOME=/root/.cache/torch \
+    PATH="/opt/venv/bin:$PATH"
+
+LABEL maintainer="Fernando Paladini <fernando@paladini.dev>"
+LABEL description="Voice Separator (NVIDIA GPU) - Demucs + FastAPI"
+LABEL version="1.0.0-gpu"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && ln -sf /usr/bin/python3 /usr/bin/python
+
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+COPY . .
+
+RUN mkdir -p static/output /root/.cache/torch/hub && \
+    chmod 777 static/output
+
+EXPOSE 7860
+VOLUME ["/root/.cache", "/app/static/output"]
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]

@@ -1,10 +1,26 @@
 # Voice Separator by Fernando Paladini
-# GitHub: https://github.com/paladini
-version: '3.8'
+# GitHub: https://github.com/paladini/voice-separator-demucs
+#
+# CPU (default, unchanged):
+#   docker compose up -d
+#
+# NVIDIA GPU (intended path = overlay; builds Dockerfile.gpu locally).
+# Hub has no :gpu tag until the maintainer pushes it. GHCR :gpu exists only
+# after the publish workflow (variant=gpu).
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+#
+# Do NOT use: docker compose --profile gpu up -d
+# The CPU service has no profile, so that command can start BOTH CPU and GPU
+# on port 7860. Overlay is the intended GPU path. Profile form (GPU only):
+#   docker compose --profile gpu up -d voice-separator-gpu
+# (stop the CPU container first.)
 
 services:
   voice-separator:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: paladini/voice-separator:latest
     container_name: voice-separator
     ports:
       - "7860:7860"
@@ -16,6 +32,25 @@ services:
       - TORCH_HOME=/root/.cache/torch
     restart: unless-stopped
 
-# Named volumes for persistence
+  voice-separator-gpu:
+    profiles: ["gpu"]
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    image: paladini/voice-separator:gpu
+    container_name: voice-separator-gpu
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./static/output:/app/static/output
+      - model-cache:/root/.cache
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TORCH_HOME=/root/.cache/torch
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    gpus: all
+    restart: unless-stopped
+
 volumes:
   model-cache:
