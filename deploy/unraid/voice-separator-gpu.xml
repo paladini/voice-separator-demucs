@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/paladini/voice-separator-demucs/issues</Support>
   <Project>https://github.com/paladini/voice-separator-demucs</Project>
-  <Overview>NVIDIA GPU build of Voice Separator (CUDA PyTorch + Demucs). Docker Hub has NO gpu tag yet — this Hub repository name fails until the maintainer pushes :gpu. Until then: build Dockerfile.gpu locally, or use ghcr.io/paladini/voice-separator:gpu after the GHCR workflow. Requires NVIDIA driver and NVIDIA Container Toolkit on Unraid.</Overview>
+  <Overview>NVIDIA GPU image of Voice Separator (CUDA PyTorch + Demucs). Requires NVIDIA driver and NVIDIA Container Toolkit on Unraid.</Overview>
   <Category>MediaApp:Music:Status:Stable</Category>
   <WebUI>http://[IP]:[PORT:7860]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/paladini/voice-separator-demucs/main/deploy/unraid/voice-separator-gpu.xml</TemplateURL>
@@ -20,9 +20,9 @@
   <DateInstalled/>
   <DonateText/>
   <DonateLink/>
-  <Requires>NVIDIA driver + nvidia-container-toolkit. Hub :gpu is not published yet (pull/build locally or GHCR after workflow). Do not use paladini/voice-separator:latest with --gpus; that image is CPU PyTorch.</Requires>
+  <Requires>NVIDIA driver + nvidia-container-toolkit. Do not use paladini/voice-separator:latest with --gpus; that image is CPU PyTorch.</Requires>
   <Description>
-    Voice Separator GPU image (tag gpu). CUDA 12.6 PyTorch. Web UI on port 7860. Hub paladini/voice-separator:gpu is not live until it is pushed; use a local build or GHCR after the gpu workflow. Do not run alongside the CPU container on the same host port.
+    Voice Separator GPU image (tag gpu). CUDA 12.6 PyTorch. Web UI on port 7860. Do not run alongside the CPU container on the same host port.
   </Description>
   <Networking>
     <Mode>bridge</Mode>

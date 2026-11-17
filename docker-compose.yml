@@ -5,8 +5,7 @@
 #   docker compose up -d
 #
 # NVIDIA GPU (intended path = overlay; builds Dockerfile.gpu locally).
-# Hub has no :gpu tag until the maintainer pushes it. GHCR :gpu exists only
-# after the publish workflow (variant=gpu).
+# The GPU image is available from Docker Hub and GHCR.
 #   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
 #
 # Do NOT use: docker compose --profile gpu up -d

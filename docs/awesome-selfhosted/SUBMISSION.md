@@ -35,4 +35,4 @@ Rendered markdown form (legacy README style, for reference only):
 
 ## Optional Hub paste
 
-After merging the GPU/docs PR, paste [`docs/docker-hub-overview.md`](../docker-hub-overview.md) into the Docker Hub repository description so Hub matches port 7860 and the CPU default. Do not advertise Hub `:gpu` as live until that tag is actually pushed.
+Paste [`docs/docker-hub-overview.md`](../docker-hub-overview.md) into the Docker Hub repository description so Hub matches port 7860 and the CPU/GPU image variants.

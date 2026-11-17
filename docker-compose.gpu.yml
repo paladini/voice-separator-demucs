@@ -3,8 +3,8 @@
 #
 #   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
 #
-# Hub does not publish :gpu yet; this builds Dockerfile.gpu locally (or uses a
-# tag you already built). After GHCR workflow / Hub push, you can retag/pull.
+# This overlay builds Dockerfile.gpu locally. You can also use the published
+# Docker Hub or GHCR image by removing the build section.
 #
 # Do NOT use: docker compose --profile gpu up -d
 # That can start BOTH the default CPU service and voice-separator-gpu on 7860.

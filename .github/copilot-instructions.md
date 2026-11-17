@@ -20,7 +20,7 @@
 - **Docker:**
   - `docker compose up -d` (CPU; files in `static/output/`)
   - For container-only CPU: `docker run -d -p 7860:7860 --name voice-separator paladini/voice-separator`
-  - Optional NVIDIA: `Dockerfile.gpu` (build-local). Hub has no `:gpu` tag until the maintainer pushes it; GHCR `:gpu` only after the publish workflow. Intended Compose path: `docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build`. Do **not** use `docker compose --profile gpu up -d` (can start CPU + GPU both on 7860). Do not pass `--gpus` to the CPU image.
+  - Optional NVIDIA: Docker Hub `paladini/voice-separator:gpu` or build with `Dockerfile.gpu`. GHCR image: `ghcr.io/paladini/voice-separator:gpu`. Intended Compose path: `docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build`. Do **not** use `docker compose --profile gpu up -d` (can start CPU + GPU both on 7860). Do not pass `--gpus` to the CPU image.
 - **Install dependencies:** `pip install -r requirements.txt`
 - **FFmpeg required:** Must be installed on host (see README for install commands).
 

@@ -7,7 +7,7 @@
 
 Uma aplicação web simples e eficiente para separar elementos de áudio (vocais, bateria, baixo, outros instrumentos) de músicas usando inteligência artificial.
 
-**Imagens:** Docker Hub `paladini/voice-separator` (CPU `latest` — padrão publicado). A tag NVIDIA `gpu` **ainda não** está no Hub; construa localmente, publique com o workflow GHCR, ou use Hub `:gpu` só depois que o maintainer enviar essa tag. Templates Unraid / TrueNAS: [`deploy/`](deploy/). Rascunho para awesome-selfhosted: [`docs/awesome-selfhosted/`](docs/awesome-selfhosted/).
+**Imagens Docker:** CPU: [`paladini/voice-separator:latest`](https://hub.docker.com/r/paladini/voice-separator). GPU NVIDIA: [`paladini/voice-separator:gpu`](https://hub.docker.com/r/paladini/voice-separator). Também disponível no [GHCR](https://github.com/paladini/voice-separator-demucs/pkgs/container/voice-separator). Templates Unraid / TrueNAS: [`deploy/`](deploy/). Rascunho para awesome-selfhosted: [`docs/awesome-selfhosted/`](docs/awesome-selfhosted/).
 
 ## 🎵 O que faz
 
@@ -33,23 +33,28 @@ cd voice-separator-demucs
 docker compose up -d
 ```
 
-GPU NVIDIA é opcional e **não** é o padrão do Hub. `docker run paladini/voice-separator:gpu` falha até essa tag existir no Docker Hub. Neste repositório (driver NVIDIA + [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)):
+### GPU NVIDIA
+
+A imagem NVIDIA usa PyTorch com CUDA. Ela requer uma GPU NVIDIA, um driver compatível e o [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
 ```bash
-# Caminho GPU pretendido: overlay (substitui o serviço CPU; um container na 7860)
-docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
-
-# Tag local (após o build acima, ou: docker build -f Dockerfile.gpu -t paladini/voice-separator:gpu .)
+# Executar a imagem GPU publicada
 docker run --gpus all -d -p 7860:7860 --name voice-separator paladini/voice-separator:gpu
 ```
 
-Não use `docker compose --profile gpu up -d` sem nome de serviço: o serviço CPU não tem profile, então o Compose pode subir **CPU e GPU** na porta **7860**. Depois do workflow GHCR (`variant=gpu`), use `ghcr.io/paladini/voice-separator:gpu`. Depois que o maintainer enviar `:gpu` ao Hub, a mesma tag funciona no Docker Hub.
+Para construir a imagem neste repositório com Docker Compose:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+```
+
+A imagem GPU usa a mesma interface web e a mesma porta da imagem CPU. Pare qualquer container Voice Separator em execução antes de iniciar a outra variante.
 
 Acesse: http://localhost:7860
 
 **Pronto!** Se usar o segundo método, seus arquivos aparecerão na pasta `output/`.
 
-A imagem padrão (`latest`) é **somente CPU**. `--gpus` nela não ativa CUDA. A GPU usa `Dockerfile.gpu` (PyTorch CUDA 12.6) e exige o NVIDIA Container Toolkit. Templates: [`deploy/unraid/`](deploy/unraid/) e [`deploy/truenas/`](deploy/truenas/).
+A imagem `latest` usa somente CPU. Para aceleração NVIDIA, use a imagem `gpu`. Ambas as variantes têm a mesma interface web e usam a porta 7860. A imagem GPU usa `Dockerfile.gpu` (PyTorch CUDA 12.6) e exige o NVIDIA Container Toolkit. Templates: [`deploy/unraid/`](deploy/unraid/) e [`deploy/truenas/`](deploy/truenas/).
 
 ### Opção 2: Instalação Manual
 

@@ -1,11 +1,10 @@
 # TrueNAS SCALE custom app / Compose.
 # CPU default (same contract as docker run -p 7860 paladini/voice-separator).
 #
-# GPU: Hub has no :gpu tag until the maintainer pushes it. Intended path is
-# the overlay file (docker-compose.gpu.yml) with a local or GHCR gpu image,
-# plus NVIDIA runtime in the TrueNAS app. Do not add a GPU runtime to the
+# GPU: use the overlay file (docker-compose.gpu.yml) with the published GPU
+# image, plus NVIDIA runtime in the TrueNAS app. Do not add a GPU runtime to the
 # CPU image — that image does not ship CUDA PyTorch.
-# IMAGE_TAG=gpu only works after you build/push that tag yourself.
+# Set IMAGE_TAG=gpu to use the Docker Hub GPU image.
 
 services:
   voice-separator:

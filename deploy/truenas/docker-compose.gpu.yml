@@ -1,8 +1,8 @@
 # TrueNAS SCALE NVIDIA overlay (intended GPU path). Use with docker-compose.yml:
 #   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
 #
-# Hub has no :gpu tag until the maintainer pushes it. Build locally or pull
-# ghcr.io/paladini/voice-separator:gpu after the GHCR workflow (variant=gpu).
+# Uses the published Docker Hub GPU image. Set the image to
+# ghcr.io/paladini/voice-separator:gpu to use GHCR instead.
 # Host must expose NVIDIA devices to Docker.
 
 services:
