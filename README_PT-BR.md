@@ -7,7 +7,12 @@
 
 Uma aplicação web simples e eficiente para separar elementos de áudio (vocais, bateria, baixo, outros instrumentos) de músicas usando inteligência artificial.
 
-**Imagens Docker:** CPU: [`paladini/voice-separator:latest`](https://hub.docker.com/r/paladini/voice-separator). GPU NVIDIA: [`paladini/voice-separator:gpu`](https://hub.docker.com/r/paladini/voice-separator). Também disponível no [GHCR](https://github.com/paladini/voice-separator-demucs/pkgs/container/voice-separator). Templates Unraid / TrueNAS: [`deploy/`](deploy/). Rascunho para awesome-selfhosted: [`docs/awesome-selfhosted/`](docs/awesome-selfhosted/).
+## Imagens Docker
+
+- **CPU:** [`paladini/voice-separator:latest`](https://hub.docker.com/r/paladini/voice-separator)
+- **GPU NVIDIA:** [`paladini/voice-separator:gpu`](https://hub.docker.com/r/paladini/voice-separator)
+
+As duas imagens também estão disponíveis no [GHCR](https://github.com/paladini/voice-separator-demucs/pkgs/container/voice-separator).
 
 ## 🎵 O que faz
 
